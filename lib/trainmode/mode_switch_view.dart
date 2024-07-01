@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 
-
 /// 模式切换view
 class ModeSwitchView extends StatefulWidget {
   const ModeSwitchView({super.key});
@@ -14,11 +13,13 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Constants.selectModelBgColor,
       alignment: const Alignment(0.0, 0.0),
+
       child: Stack(
+
         children: [
           Container(
+
             color: Constants.selectModelBgColor, height: 40, width: 178,
             ),
           Positioned(
@@ -28,21 +29,26 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
               color: Constants.selectedModelOrangeBgColor, height: 30, width: 77,
               // child: Text('Area A',
               // ),
-              child:  Constants.mediumWhiteTextWidget('Area A', 15, Colors.white)
+              child: Container(
+                alignment: Alignment.center,
+                child:Constants.mediumWhiteTextWidget('Area A', 15, Colors.white),
+              )
+
             ),
           ),
           Positioned(
             top: 5,
             right: 5,
             child: Container(
-              color: Constants.selectModelBgColor, height: 30, width: 77,
-                child: Constants.mediumWhiteTextWidget('Area B', 15, Constants.grayTextColor)
-
-            ),
+               color: Constants.selectModelBgColor, height: 30, width: 77,
+                child: Container(
+                 alignment: Alignment.center,
+                 child:Constants.mediumWhiteTextWidget('Area B', 15, Constants.grayTextColor)
+                ),
+              ),
             ),
         ],
       ),
-
     );
   }
 }

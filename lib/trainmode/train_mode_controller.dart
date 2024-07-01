@@ -26,7 +26,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
             height: 40,
             margin: EdgeInsets.only(top: 67,left: 20),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
@@ -35,11 +35,12 @@ class _TrainModeControllerState extends State<TrainModeController> {
                    child: Image(image: AssetImage('images/resetmode/tennis_icon.png'),),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 6) ,
+                  margin: EdgeInsets.only(left: 6),
                   child: Constants.mediumWhiteTextWidget('200', 12, Colors.white),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 37),
+                  // margin: EdgeInsets.only(left: 37),
+                  alignment: Alignment.center,
                   child: ModeSwitchView(),
                 ),
                 Container(
@@ -48,9 +49,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                   height: 16,
                   child: Image(image: AssetImage('images/resetmode/mode_battery_icon.png'),),
                 ),
-
               ],
-
             ),
           ),
           Container(

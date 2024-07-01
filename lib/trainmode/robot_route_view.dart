@@ -53,7 +53,6 @@ class _RobotRouteViewState extends State<RobotRouteView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Constants.selectModelBgColor,
       alignment: const Alignment(0, 0),
       child: Stack(
         children: <Widget>[

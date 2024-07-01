@@ -81,7 +81,7 @@ class Constants {
   static Color darkThemeOpacityColor = Color.fromRGBO(41, 41, 54, 0.24);
   static Color baseStyleColor = Color.fromRGBO(248, 133, 11, 1);
   static Color baseGreyStyleColor = Color.fromRGBO(177, 177, 177, 1);
-  static Color darkControllerColor = Color.fromRGBO(57, 57, 75, 1);
+  static Color darkControllerColor = Color.fromRGBO(28, 29, 32, 1);
   static Color baseControllerColor = Color.fromRGBO(41, 41, 54, 1);
 
   static Color grayTextColor = Color.fromRGBO(156, 156, 156, 1);
