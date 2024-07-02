@@ -14,12 +14,9 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
   Widget build(BuildContext context) {
     return Container(
       alignment: const Alignment(0.0, 0.0),
-
       child: Stack(
-
         children: [
           Container(
-
             color: Constants.selectModelBgColor, height: 40, width: 178,
             ),
           Positioned(
@@ -33,7 +30,6 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
                 alignment: Alignment.center,
                 child:Constants.mediumWhiteTextWidget('Area A', 15, Colors.white),
               )
-
             ),
           ),
           Positioned(

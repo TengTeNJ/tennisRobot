@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:tennis_robot/constant/constants.dart';
-import 'dart:math';
 
 /**
  * 机器人轨迹VIew
@@ -57,8 +55,7 @@ class _RobotRouteViewState extends State<RobotRouteView> {
       child: Stack(
         children: <Widget>[
            rectBorderWidget,
-
-         Positioned(
+          Positioned(
            left: 24,
            top: 18,
            child: Container(
@@ -77,9 +74,7 @@ class _RobotRouteViewState extends State<RobotRouteView> {
          ),
          for(int i = 0; i < 10 ; i ++)
            getRandomTenniss,
-
         ],
-
       ),
     );
   }

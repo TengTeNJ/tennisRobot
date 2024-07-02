@@ -3,6 +3,7 @@ import 'package:tennis_robot/connect/connect_robot_controller.dart';
 import 'package:tennis_robot/root_page.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/selectmode/select_mode_controller.dart';
+import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
 
 void main() {
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       onGenerateRoute: Routes.onGenerateRoute,
       home: RootPageController(),
+      // home: RobotMoveView(),
     );
   }
 }

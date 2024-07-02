@@ -3,6 +3,7 @@ import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/customAppBar.dart';
 import 'package:tennis_robot/trainmode/mode_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_function_switch_view.dart';
+import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/trainmode/robot_route_view.dart';
 
 /// 训练模式
@@ -29,17 +30,24 @@ class _TrainModeControllerState extends State<TrainModeController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                   width: 20,
-                   height: 20,
-                   child: Image(image: AssetImage('images/resetmode/tennis_icon.png'),),
+                Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      child: Image(image: AssetImage('images/resetmode/tennis_icon.png'),),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      // margin: EdgeInsets.only(left: 6),
+                      child: Constants.mediumWhiteTextWidget('200', 12, Colors.white),
+                    ),
+                  ],
                 ),
+
                 Container(
-                  margin: EdgeInsets.only(left: 6),
-                  child: Constants.mediumWhiteTextWidget('200', 12, Colors.white),
-                ),
-                Container(
-                  // margin: EdgeInsets.only(left: 37),
                   alignment: Alignment.center,
                   child: ModeSwitchView(),
                 ),
@@ -53,11 +61,13 @@ class _TrainModeControllerState extends State<TrainModeController> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 30),
+            margin: EdgeInsets.only(top: 18),
+
             child: RobotRouteView(),
+            // child: RobotMoveView(),
           ),
           Container(
-            margin: EdgeInsets.only(top: 12),
+            margin: EdgeInsets.only(top: 10),
             child: Image(image: AssetImage('images/connect/select_area_line.png'),
             width: Constants.screenWidth(context),
             height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 180,
