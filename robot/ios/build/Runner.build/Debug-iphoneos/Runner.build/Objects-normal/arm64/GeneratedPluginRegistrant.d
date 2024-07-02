@@ -1,0 +1,20 @@
+dependencies: \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/Runner/GeneratedPluginRegistrant.m \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/Runner/GeneratedPluginRegistrant.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Modules/module.modulemap \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/Flutter.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterAppDelegate.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterMacros.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterPlugin.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterBinaryMessenger.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterChannels.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterCodecs.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterPlatformViews.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterTexture.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterCallbackCache.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterDartProject.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterEngine.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterEngineGroup.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterHeadlessDartRunner.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h \
+  /Users/yangqingjie/Desktop/项目/tengte/tennis/tennisRobot/robot/ios/build/Debug-iphoneos/Flutter.framework/Headers/FlutterViewController.h
