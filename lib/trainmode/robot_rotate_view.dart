@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 旋转的机器人
+/// 旋转的view
 class RobotRotateView extends StatefulWidget {
    RobotRotateView({required this.turns,required this.duration,required this.child});
 

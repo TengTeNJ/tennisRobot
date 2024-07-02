@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tennis_robot/trainmode/robot_camera_rotate_view.dart';
 import 'package:tennis_robot/trainmode/robot_rotate_view.dart';
 import 'package:tennis_robot/trainmode/sector_painter.dart';
 
@@ -11,15 +12,14 @@ class RobotMoveView extends StatefulWidget {
 }
 
 class _RobotMoveViewState extends State<RobotMoveView> {
-  double _turns = .0;
+  double _turns = .2;
 
   @override
   Widget build(BuildContext context) {
       return Container(
         height: 60,
         child: Row(
-
-            children: [
+          children: [
               // RobotRotateView(
               //   turns: _turns,
               //   duration: 500,
@@ -32,21 +32,24 @@ class _RobotMoveViewState extends State<RobotMoveView> {
                 child: RobotRotateView(
                   turns: _turns,
                   duration: 1000,
-                  child: Image.asset('images/connect/robot_icon.png',
-                   width: 50,
-                    height: 25,
-                  ),
+                  child: RobotCameraRotateView(),
                 ),
               ),
-               Container(
-                 margin: EdgeInsets.only(left: 0),
-                 // color: Colors.red,
-                  child: CustomPaint(
-                    size: const Size(100, 100),
-                    painter: SectorPainter(),
-                  ),
-               ),
-            ],
+               // Container(
+               //   margin: EdgeInsets.only(left: 0),
+               //   // color: Colors.red,
+               //    child: CustomPaint(
+               //      size: const Size(100, 100),
+               //      painter: SectorPainter(),
+               //    ),
+               // ),
+            ElevatedButton(
+              child: const Text("逆时针旋转1/5圈"),
+              onPressed: () {
+                setState(() => _turns -= .2);
+              },
+            )
+          ],
         ),
       );
   }

@@ -63,8 +63,8 @@ class _TrainModeControllerState extends State<TrainModeController> {
           Container(
             margin: EdgeInsets.only(top: 18),
 
-            child: RobotRouteView(),
-            // child: RobotMoveView(),
+           child: RobotRouteView(),
+//             child: RobotMoveView(),
           ),
           Container(
             margin: EdgeInsets.only(top: 10),
