@@ -95,6 +95,23 @@ class Constants {
     );
   }
 
+  static Text mediumBaseTextWidget(String text, double fontSize,
+      {int maxLines = 1,
+        TextAlign textAlign = TextAlign.center,
+        double height = 1.0}) {
+    return Text(
+      maxLines: maxLines,
+      textAlign: textAlign,
+      text,
+      style: TextStyle(
+          height: height,
+          fontFamily: 'SanFranciscoDisplay',
+          fontWeight: FontWeight.w500,
+          color: Constants.baseStyleColor,
+          fontSize: fontSize),
+    );
+  }
+
   static Color darkThemeColor = Color.fromRGBO(38, 38, 48, 1);
   static Color darkThemeOpacityColor = Color.fromRGBO(41, 41, 54, 0.24);
   static Color baseStyleColor = Color.fromRGBO(248, 133, 11, 1);

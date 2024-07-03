@@ -8,7 +8,7 @@ class ActionListView extends StatefulWidget {
       required this.desc,
       this.code = 0,
       this.unit,
-      this.showNext = false});
+      this.showNext = false,this.onTap});
 
   bool showNext;
   String? assetPath;
@@ -16,6 +16,7 @@ class ActionListView extends StatefulWidget {
   String desc;
   String? unit;
   int code;
+  Function? onTap;
 
   @override
   State<ActionListView> createState() => _ActionListViewState();
@@ -31,21 +32,29 @@ class _ActionListViewState extends State<ActionListView> {
         children: [
           Padding(
             padding: EdgeInsets.only(top: 12, left: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  widget.title ?? '--',
-                  style: TextStyle(
-                      fontFamily: 'SanFranciscoDisplay',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Constants.grayTextColor),
-                ),
-                SizedBox(width: 6,),
-                widget.showNext ? Image(image: AssetImage('images/base/next.png'),width: 4.5,height: 7.5,) : Container()
-              ],
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: (){
+                if(widget.onTap != null){
+                  widget.onTap!();
+                }
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.title ?? '--',
+                    style: TextStyle(
+                        fontFamily: 'SanFranciscoDisplay',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Constants.grayTextColor),
+                  ),
+                  SizedBox(width: 6,),
+                  widget.showNext ? Image(image: AssetImage('images/base/next.png'),width: 4.5,height: 7.5,) : Container()
+                ],
+              ),
             ),
           ),
           Padding(
