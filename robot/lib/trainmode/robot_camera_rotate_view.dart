@@ -18,12 +18,12 @@ class _RobotCameraRotateViewState extends State<RobotCameraRotateView> {
           child:Image.asset('images/connect/robot_icon.png',
             width: 50,
             height: 25,
-            color: Colors.red,
+            // color: Colors.red,
           ),
         ),
 
         Container(
-          color: Colors.blue,
+          // color: Colors.blue,
           margin: EdgeInsets.only(left: 0),
           child: CustomPaint(
             size: const Size(100, 100),

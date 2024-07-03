@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/customAppBar.dart';
@@ -15,17 +16,25 @@ class TrainModeController extends StatefulWidget {
 }
 
 class _TrainModeControllerState extends State<TrainModeController> {
+  int mode = 0;
+
+  void modeChange(int index) {
+    setState(() {
+      mode = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.darkControllerColor,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: Constants.screenWidth(context),
             height: 40,
-            margin: EdgeInsets.only(top: 67,left: 20),
+            margin: EdgeInsets.only(top: 67, left: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,18 +44,20 @@ class _TrainModeControllerState extends State<TrainModeController> {
                     Container(
                       width: 20,
                       height: 20,
-                      child: Image(image: AssetImage('images/resetmode/tennis_icon.png'),),
+                      child: Image(
+                        image: AssetImage('images/resetmode/tennis_icon.png'),
+                      ),
                     ),
                     SizedBox(
                       width: 6,
                     ),
                     Container(
                       // margin: EdgeInsets.only(left: 6),
-                      child: Constants.mediumWhiteTextWidget('200', 12, Colors.white),
+                      child: Constants.mediumWhiteTextWidget(
+                          '200', 12, Colors.white),
                     ),
                   ],
                 ),
-
                 Container(
                   alignment: Alignment.center,
                   child: ModeSwitchView(),
@@ -55,27 +66,75 @@ class _TrainModeControllerState extends State<TrainModeController> {
                   margin: EdgeInsets.only(right: 16),
                   width: 32,
                   height: 16,
-                  child: Image(image: AssetImage('images/resetmode/mode_battery_icon.png'),),
+                  child: Image(
+                    image: AssetImage('images/resetmode/mode_battery_icon.png'),
+                  ),
                 ),
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 18),
+          mode == 2
+              ? Container(
+                  margin: EdgeInsets.only(top: 18),
+                  child: RobotRouteView(),
+                  // child: RobotMoveView(),
+                )
+              : Container(
+                  margin: EdgeInsets.only(top: 18),
+                  child: SizedBox(
+                    height: 60,
+                  ),
+                ),
 
-           child: RobotRouteView(),
-//             child: RobotMoveView(),
-          ),
           Container(
             margin: EdgeInsets.only(top: 10),
-            child: Image(image: AssetImage('images/connect/select_area_line.png'),
-            width: Constants.screenWidth(context),
-            height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 180,
+            // child: Image(image: AssetImage('images/connect/select_area_line.png'),
+            // width: Constants.screenWidth(context),
+            // height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 180,
+            // ),
+            //
+
+            child: Stack(
+              children: [
+                Container(
+                  child: Image(
+                    image: AssetImage('images/connect/select_area_line.png'),
+                  ),
+                  width: Constants.screenWidth(context),
+                  height: (Constants.screenWidth(context) - 58 * 2) *
+                          (813 / 522) /
+                          2 +
+                      180,
+                ),
+
+                mode == 1 ?
+                Positioned(
+                    left: 24,
+                    top: 140,
+
+                    child: DottedBorder(
+                      dashPattern: [8, 8],
+                      strokeWidth: 2,
+                      color: Constants.selectedModelBgColor,
+                      child: Container(
+                        width: 354,
+                        height: 265,
+                        color: Color.fromRGBO(77, 35, 10, 0.3),
+                      ),
+                    )) : Positioned(child: Container(),),
+              ],
             ),
           ),
           Container(
             margin: EdgeInsets.only(top: 70),
-           child: RobotFunctionSwitchView(),
+            child: RobotFunctionSwitchView(
+              resetModeClick: () {
+                modeChange(1);
+              },
+              trainModeClick: () {
+                modeChange(2);
+              },
+            ),
           ),
         ],
       ),
