@@ -7,6 +7,7 @@ import 'package:tennis_robot/trainmode/robot_function_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/trainmode/robot_route_view.dart';
 import 'package:tennis_robot/trainmode/train_mode_total_view.dart';
+import 'package:tennis_robot/views/button_switch_view.dart';
 
 /// 训练模式
 class TrainModeController extends StatefulWidget {
@@ -61,7 +62,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                 ),
                 Container(
                   alignment: Alignment.center,
-                  child: ModeSwitchView(),
+                  child: mode == 3 ?ButtonSwitchView(leftTitle: 'Retrieve', rightTitle: 'Pause') :ModeSwitchView(),
                 ),
                 Container(
                   margin: EdgeInsets.only(right: 16),
@@ -122,11 +123,8 @@ class _TrainModeControllerState extends State<TrainModeController> {
           Container(
             margin: EdgeInsets.only(top: 70),
             child: RobotFunctionSwitchView(
-              resetModeClick: () {
-                modeChange(1);
-              },
-              trainModeClick: () {
-                modeChange(2);
+              onTapClick: (index){
+                modeChange(index);
               },
             ),
           ),

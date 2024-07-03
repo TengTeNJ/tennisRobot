@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../utils/color.dart';
+
 
 class Constants {
   // 生成随机数
@@ -108,6 +110,26 @@ class Constants {
           fontFamily: 'SanFranciscoDisplay',
           fontWeight: FontWeight.w500,
           color: Constants.baseStyleColor,
+          fontSize: fontSize),
+    );
+  }
+
+  static Text customTextWidget(String text, double fontSize, String color,
+      {int? maxLines,
+        TextAlign textAlign = TextAlign.center,
+        double height = 1.0,
+        FontWeight? fontWeight,
+        TextOverflow? overflow}) {
+    return Text(
+      textAlign: textAlign,
+      maxLines: maxLines ?? null,
+      text,
+      style: TextStyle(
+          overflow: overflow,
+          height: height,
+          fontFamily: 'SanFranciscoDisplay',
+          fontWeight: fontWeight,
+          color: hexStringToColor(color),
           fontSize: fontSize),
     );
   }

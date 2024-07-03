@@ -3,10 +3,9 @@ import '../constant/constants.dart';
 
 /// 功能切换view
 class RobotFunctionSwitchView extends StatefulWidget {
-  Function? resetModeClick;
-  Function? trainModeClick;
+  Function? onTapClick;
 
-  RobotFunctionSwitchView({this.resetModeClick, this.trainModeClick});
+  RobotFunctionSwitchView({this.onTapClick});
 
   @override
   State<RobotFunctionSwitchView> createState() => _RobotFunctionSwitchViewState();
@@ -117,8 +116,8 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
            ),),
 
            GestureDetector(onTap: (){
-             if (widget.resetModeClick != null) {
-               widget.resetModeClick!();
+             if (widget.onTapClick != null) {
+               widget.onTapClick!(1);
              }
              print('reset');
              _actionBtnClick(1);
@@ -163,8 +162,8 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
 
            GestureDetector(onTap: (){
              print('train');
-             if (widget.trainModeClick != null) {
-               widget.trainModeClick!();
+             if (widget.onTapClick != null) {
+               widget.onTapClick!(2);
              }
 
              _actionBtnClick(2);
@@ -208,6 +207,9 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
 
            GestureDetector(onTap: () {
              print('control');
+             if (widget.onTapClick != null) {
+               widget.onTapClick!(3);
+             }
              _actionBtnClick(3);
 
            },child: Container(
