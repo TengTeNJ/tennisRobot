@@ -17,9 +17,10 @@ class _ActionControllerState extends State<ActionController> {
     return Scaffold(
       backgroundColor: Constants.darkControllerColor,
       appBar: CustomAppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // Container(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // Container(
           children: [
             Container(
               margin: EdgeInsets.only(top: 16, left: 16),
@@ -56,11 +57,11 @@ class _ActionControllerState extends State<ActionController> {
             ),
             Container(
               margin: EdgeInsets.only(left: 65,top: 24),
-                  child: Image(
-                    width: 277,
-                    height: 215,
-                    image: AssetImage('images/connect/home_robot.png'),
-                  ),
+              child: Image(
+                width: 277,
+                height: 215,
+                image: AssetImage('images/connect/home_robot.png'),
+              ),
             ),
             Container(
               width: Constants.screenWidth(context),
@@ -71,10 +72,10 @@ class _ActionControllerState extends State<ActionController> {
             Container(
               margin: EdgeInsets.only(top: 18),
               width: Constants.screenWidth(context),
-              height: 200,
               child: ActionDataListView(),
             ),
           ],
+        ),
       ),
     );
   }

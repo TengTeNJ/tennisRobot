@@ -17,13 +17,13 @@ class _ActionDataListViewState extends State<ActionDataListView> {
            mainAxisAlignment: MainAxisAlignment.spaceBetween,
            children: [
              ActionListView(assetPath: 'images/connect/today_number_icon.png',title: 'Today',desc: '200'),
-             ActionListView(assetPath: 'images/connect/totol_number_icon.png',title: 'Total',desc: '1200'),
+             ActionListView(assetPath: 'images/connect/totol_number_icon.png',title: 'Total',desc: '1200',showNext: true,),
            ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ActionListView(assetPath: 'images/connect/today_use_time.png',title: 'Today Use',desc: '60 min'),
+            ActionListView(assetPath: 'images/connect/today_use_time.png',title: 'Today Use',desc: '60',unit: 'min',),
             ActionListView(assetPath: 'images/connect/today_cal.png',title: 'Calorie',desc: '70'),
           ],
         ),

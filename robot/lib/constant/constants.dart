@@ -41,6 +41,24 @@ class Constants {
     );
   }
 
+  static Text boldWhiteTextWidget(String text, double fontSize,
+      {int? maxLines,
+        TextAlign textAlign = TextAlign.center,
+        double height = 1.0}) {
+    return Text(
+      textAlign: textAlign,
+      maxLines: maxLines,
+      text,
+      style: TextStyle(
+        height: height,
+        fontFamily: 'SanFranciscoDisplay',
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        fontSize: fontSize,
+      ),
+    );
+  }
+
   static Text boldBaseTextWidget(String text, double fontSize,
       {int maxLines = 1,
         TextAlign textAlign = TextAlign.center,
@@ -70,7 +88,7 @@ class Constants {
       style: TextStyle(
           overflow: overflow,
           height: height,
-          fontFamily: 'FontName',
+          fontFamily: 'SanFranciscoDisplay',
           fontWeight: FontWeight.w400,
           color: Colors.white,
           fontSize: fontSize),
