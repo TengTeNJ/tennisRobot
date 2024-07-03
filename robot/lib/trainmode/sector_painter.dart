@@ -13,7 +13,7 @@ class SectorPainter extends CustomPainter {
       ..color = Color.fromRGBO(233, 100, 21, 0.6)
       ..style = PaintingStyle.fill;
     print(size.width);
-    final Rect rect = Rect.fromLTWH(-70, -15, size.width , size.height *1.5);
+    final Rect rect = Rect.fromLTWH(-64,0, size.width , size.height);
     final double startAngle = - pi / 4; // 90度处开始
     final double sweepAngle =  pi / 2; // 90度扇形
 

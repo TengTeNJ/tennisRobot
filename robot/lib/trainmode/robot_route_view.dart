@@ -38,8 +38,8 @@ class _RobotRouteViewState extends State<RobotRouteView> {
   /// 生成随机位置的网球
   Widget get getRandomTenniss {
     return  Positioned(
-      left: Constants.randomNumberLeftMargin() + 63,
-      top: Constants.randomNumberTopMargin() + 0,
+      left: Constants.randomNumberLeftMargin(32) + 63,
+      top: Constants.randomNumberTopMargin(55) + 0,
       child:Container(
         width: 8,
         height: 8,

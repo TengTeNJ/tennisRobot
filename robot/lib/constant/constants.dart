@@ -6,12 +6,12 @@ import 'package:flutter/services.dart';
 
 class Constants {
   // 生成随机数
-  static int randomNumberLeftMargin() {
-    return Random().nextInt(32);
+  static int randomNumberLeftMargin(int number) {
+    return Random().nextInt(number);
   }
 
-  static int randomNumberTopMargin() {
-    return Random().nextInt(55);
+  static int randomNumberTopMargin(int number) {
+    return Random().nextInt(number);
   }
   //  屏幕宽度
   static double screenWidth(BuildContext context) {

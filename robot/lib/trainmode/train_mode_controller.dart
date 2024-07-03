@@ -6,6 +6,7 @@ import 'package:tennis_robot/trainmode/mode_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_function_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/trainmode/robot_route_view.dart';
+import 'package:tennis_robot/trainmode/train_mode_total_view.dart';
 
 /// 训练模式
 class TrainModeController extends StatefulWidget {
@@ -95,6 +96,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
             //
 
             child: Stack(
+              clipBehavior: Clip.none,
               children: [
                 Container(
                   child: Image(
@@ -110,18 +112,10 @@ class _TrainModeControllerState extends State<TrainModeController> {
                 mode == 1 ?
                 Positioned(
                     left: 24,
-                    top: 140,
-
-                    child: DottedBorder(
-                      dashPattern: [8, 8],
-                      strokeWidth: 2,
-                      color: Constants.selectedModelBgColor,
-                      child: Container(
-                        width: 354,
-                        height: 265,
-                        color: Color.fromRGBO(77, 35, 10, 0.3),
-                      ),
-                    )) : Positioned(child: Container(),),
+                    top: 100,
+                    child: TrainModeTotalView()
+                )
+                    : Positioned(child: Container(),),
               ],
             ),
           ),
