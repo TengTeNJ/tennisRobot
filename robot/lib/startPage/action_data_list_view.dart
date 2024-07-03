@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/startPage/action_list_view.dart';
+import 'package:tennis_robot/utils/color.dart';
 import 'package:tennis_robot/views/data_bar_view.dart';
 
 import '../models/my_status_model.dart';
@@ -44,6 +45,14 @@ class _ActionDataListViewState extends State<ActionDataListView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16),
+          height: 1,
+          decoration: BoxDecoration(
+            color: hexStringToColor('#676767'),
+            border: Border.all(color:hexStringToColor('#676767'),width: 1,style:BorderStyle.solid),
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -66,6 +75,14 @@ class _ActionDataListViewState extends State<ActionDataListView> {
           ],
         ),
        showBarView ?  MyStatsBarChatView(datas: datas,maxLeft: maxLeft + 0.0) : Container(),
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16,top: 16),
+          height: 1,
+          decoration: BoxDecoration(
+            color: hexStringToColor('#676767'),
+            border: Border.all(color:hexStringToColor('#676767'),width: 1,style:BorderStyle.solid),
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -80,6 +97,14 @@ class _ActionDataListViewState extends State<ActionDataListView> {
                 title: 'Calorie',
                 desc: '70'),
           ],
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16,top: 16),
+          height: 1,
+          decoration: BoxDecoration(
+            color: hexStringToColor('#676767'),
+            border: Border.all(color:hexStringToColor('#676767'),width: 1,style:BorderStyle.solid),
+          ),
         ),
       ],
     );
