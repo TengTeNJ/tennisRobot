@@ -31,117 +31,120 @@ class _TrainModeControllerState extends State<TrainModeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.darkControllerColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: Constants.screenWidth(context),
-            height: 40,
-            margin: EdgeInsets.only(top: 67, left: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      child: Image(
-                        image: AssetImage('images/resetmode/tennis_icon.png'),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Container(
-                      // margin: EdgeInsets.only(left: 6),
-                      child: Constants.mediumWhiteTextWidget(
-                          '200', 12, Colors.white),
-                    ),
-                  ],
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: mode == 3
-                      ? ButtonSwitchView(
-                          leftTitle: 'Retrieve', rightTitle: 'Pause')
-                      : ModeSwitchView(),
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 16),
-                  width: 32,
-                  height: 16,
-                  child: Image(
-                    image: AssetImage('images/resetmode/mode_battery_icon.png'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          mode == 2
-              ? Container(
-                  margin: EdgeInsets.only(top: 18),
-                  child: RobotRouteView(),
-                  // child: RobotMoveView(),
-                )
-              : mode != 3
-                  ? Container(
-                      margin: EdgeInsets.only(top: 18),
-                      child: SizedBox(
-                        height: 60,
-                      ),
-                    )
-                  : Container(),
-          mode == 3
-              ? Container(
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  child: RemoteControlView(),
-                )
-              : Container(
-                  margin: EdgeInsets.only(top: 10),
-                  // child: Image(image: AssetImage('images/connect/select_area_line.png'),
-                  // width: Constants.screenWidth(context),
-                  // height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 180,
-                  // ),
-                  //
-
-                  child: Stack(
-                    clipBehavior: Clip.none,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: Constants.screenWidth(context),
+              height: 40,
+              margin: EdgeInsets.only(top: 67, left: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     children: [
                       Container(
+                        width: 20,
+                        height: 20,
                         child: Image(
-                          image:
-                              AssetImage('images/connect/select_area_line.png'),
+                          image: AssetImage('images/resetmode/tennis_icon.png'),
                         ),
-                        width: Constants.screenWidth(context),
-                        height: (Constants.screenWidth(context) - 58 * 2) *
-                                (813 / 522) /
-                                2 +
-                            180,
                       ),
-                      mode == 1
-                          ? Positioned(
-                              left: 24, top: 100, child: TrainModeTotalView())
-                          : Positioned(
-                              child: Container(),
-                            ),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      Container(
+                        // margin: EdgeInsets.only(left: 6),
+                        child: Constants.mediumWhiteTextWidget(
+                            '200', 12, Colors.white),
+                      ),
                     ],
                   ),
-                ),
-          Container(
-            margin: EdgeInsets.only(top: 70),
-            child: RobotFunctionSwitchView(
-              onTapClick: (index) {
-                modeChange(index);
-              },
+                  Container(
+                    alignment: Alignment.center,
+                    child: mode == 3
+                        ? ButtonSwitchView(
+                        leftTitle: 'Retrieve', rightTitle: 'Pause')
+                        : ModeSwitchView(),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 16),
+                    width: 32,
+                    height: 16,
+                    child: Image(
+                      image: AssetImage('images/resetmode/mode_battery_icon.png'),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 60,
-          )
-        ],
+            mode == 2
+                ? Container(
+              margin: EdgeInsets.only(top: 18),
+              child: RobotRouteView(),
+              // child: RobotMoveView(),
+            )
+                : mode != 3
+                ? Container(
+              margin: EdgeInsets.only(top: 18),
+              child: SizedBox(
+                height: 60,
+              ),
+            )
+                : Container(),
+            mode == 3
+                ? Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              child: RemoteControlView(),
+            )
+                : Container(
+              margin: EdgeInsets.only(top: 10),
+              // child: Image(image: AssetImage('images/connect/select_area_line.png'),
+              // width: Constants.screenWidth(context),
+              // height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 180,
+              // ),
+              //
+
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    child: Image(
+                      image:
+                      AssetImage('images/connect/select_area_line.png'),
+                    ),
+                    width: Constants.screenWidth(context),
+                    height: (Constants.screenWidth(context) - 58 * 2) *
+                        (813 / 522) /
+                        2 +
+                        180,
+                  ),
+                  mode == 1
+                      ? Positioned(
+                      left: 24, top: 100, child: TrainModeTotalView())
+                      : Positioned(
+                    child: Container(),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 70),
+              child: RobotFunctionSwitchView(
+                onTapClick: (index) {
+                  modeChange(index);
+                },
+              ),
+            ),
+            SizedBox(
+              height: 60,
+            )
+          ],
+        ),
+
       ),
     );
   }
