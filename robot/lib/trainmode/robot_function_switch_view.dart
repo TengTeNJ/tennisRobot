@@ -72,7 +72,7 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
        height:60 ,
 
        child: Row(
-         mainAxisAlignment: MainAxisAlignment.spaceAround,
+         mainAxisAlignment: MainAxisAlignment.center,
          // mainAxisSize: MainAxisSize.max,
          children: [
            GestureDetector(onTap: (){
@@ -84,7 +84,7 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
              //   borderRadius: BorderRadius.circular(8),
              // ),
 
-             margin: EdgeInsets.only(left: 28),
+             // margin: EdgeInsets.only(left: 28),
              width: 60,
              height: 60,
              child: Stack(
@@ -123,7 +123,7 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
              _actionBtnClick(1);
 
            },child: Container(
-             margin: EdgeInsets.only(left: 13),
+             margin: EdgeInsets.only(left: 20),
              width: 60,
              height: 60,
 
@@ -165,11 +165,10 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
              if (widget.onTapClick != null) {
                widget.onTapClick!(2);
              }
-
              _actionBtnClick(2);
 
            },child: Container(
-             margin: EdgeInsets.only(left: 13),
+             margin: EdgeInsets.only(left: 20),
              width: 60,
              height: 60,
              child: Stack(
@@ -213,7 +212,7 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
              _actionBtnClick(3);
 
            },child: Container(
-             margin: EdgeInsets.only(left: 13),
+             margin: EdgeInsets.only(left: 20),
              width: 60,
              height: 60,
              child: Stack(
@@ -248,7 +247,6 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
                ],
              ),
            ),),
-
          ],
        ),
     );

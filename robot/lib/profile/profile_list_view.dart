@@ -46,11 +46,12 @@ class _ProfileListViewState extends State<ProfileListView> {
 
 
           SizedBox(height: 16),
-          Text(widget.title,
-           style: TextStyle(
-                  fontFamily: 'SanFranciscoDisplay',
-                  fontSize: 16, color: Colors.white, height: 0.8),
-           ),
+          Constants.mediumWhiteTextWidget(widget.title, 16, Colors.white),
+          // Text(widget.title,
+          //  style: TextStyle(
+          //         fontFamily: 'SanFranciscoDisplay',
+          //         fontSize: 16, color: Colors.white, height: 0.8),
+          //  ),
 
         ],
       ),

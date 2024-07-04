@@ -25,6 +25,23 @@ class Constants {
     return MediaQuery.of(context).size.height;
   }
 
+  static Text regularWhiteTextWidget(String text, double fontSize,Color color,
+      {int? maxLines,
+        TextAlign textAlign = TextAlign.center,
+        double height = 1.0}) {
+    return Text(
+      maxLines: maxLines ?? null,
+      textAlign: textAlign,
+      text,
+      style: TextStyle(
+          height: height,
+          fontFamily: 'SanFranciscoDisplay',
+          fontWeight: FontWeight.w400,
+          color: color,
+          fontSize: fontSize),
+    );
+  }
+
   static Text mediumWhiteTextWidget(String text, double fontSize,Color color,
       {int maxLines = 1,
         TextAlign textAlign = TextAlign.center,
@@ -149,11 +166,12 @@ class Constants {
   static Color baseTextGrayBgColor = Color.fromRGBO(67, 67, 65, 1);
   static Color selectedModelTransparencyBgColor = Color.fromRGBO(233, 100, 21, 0.39);
   static Color selectedModelOrangeBgColor = Color.fromRGBO(233, 100, 21, 1.0);
+  static Color dialogBgColor = Color.fromRGBO(56, 58, 64, 1);
 
 
 
   static String connectRobotText =
-      'Connect your phone to the Bots Wi-Fi name will match your Bots serial number.The password is "Potent".';
+      'Connect your phone to the Bots Wi-Fi name will match your Bots serial number.The password is';
 
 
 }

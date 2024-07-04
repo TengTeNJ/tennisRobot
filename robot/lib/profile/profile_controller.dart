@@ -20,7 +20,7 @@ class _ProfileControllerState extends State<ProfileController> {
              Container(
                width: Constants.screenWidth(context),
                margin: EdgeInsets.only(top: 55),
-               child: Constants.mediumWhiteTextWidget('Profile', 22,Colors.white),
+               child: Constants.boldWhiteTextWidget('Profile', 22),
              ),
              Container(
                margin: EdgeInsets.only(top: 40),

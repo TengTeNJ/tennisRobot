@@ -7,8 +7,10 @@ import 'package:tennis_robot/trainmode/robot_function_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/trainmode/robot_route_view.dart';
 import 'package:tennis_robot/trainmode/train_mode_total_view.dart';
+import 'package:tennis_robot/utils/dialog.dart';
 import 'package:tennis_robot/views/button_switch_view.dart';
 import 'package:tennis_robot/views/remote_control_view.dart';
+import 'package:tennis_robot/utils/navigator_util.dart';
 
 /// 训练模式
 class TrainModeController extends StatefulWidget {
@@ -136,6 +138,22 @@ class _TrainModeControllerState extends State<TrainModeController> {
               child: RobotFunctionSwitchView(
                 onTapClick: (index) {
                   modeChange(index);
+
+                  if (index == 1) {
+                      TTDialog.robotEndTaskDialog(context, () async {
+                      NavigatorUtil.pop();
+                    });
+                  } else if (index == 2) {
+                      TTDialog.robotEXceptionDialog(context, () async {
+                      NavigatorUtil.pop();
+                    });
+                  } else if (index == 3) {
+                    TTDialog.robotModeAlertDialog(context, () async {
+                      NavigatorUtil.pop();
+
+                    });
+                  }
+
                 },
               ),
             ),

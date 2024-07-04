@@ -137,13 +137,13 @@ class _SelectModeControllerState extends State<SelectModeController> {
                 } ,
                 child: Container(
                   child: Center(
-                    child: Constants.mediumWhiteTextWidget('Start', 18 ,Colors.white),
+                    child: Constants.mediumWhiteTextWidget('Start', 20 ,Colors.white),
                   ),
-                  height: 56,
-                  margin: EdgeInsets.only(left: 30, right: 30, top: 142),
+                  height: 72,
+                  margin: EdgeInsets.only(left: 44, right: 44, top: 142),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Constants.baseStyleColor,
+                    color: Constants.selectedModelOrangeBgColor,
                   ),
                 ),
               )
