@@ -10,6 +10,14 @@ class ModeSwitchView extends StatefulWidget {
 }
 
 class _ModeSwitchViewState extends State<ModeSwitchView> {
+   int _currentIndex = 0;
+
+  void _actionClick(int index) {
+    setState(() {
+        _currentIndex = index;
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,31 +25,48 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
       child: Stack(
         children: [
           Container(
-            color: Constants.selectModelBgColor, height: 40, width: 178,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Constants.selectModelBgColor,
+            ),
+             height: 40, width: 178,
             ),
           Positioned(
             left: 5,
             top: 5,
-            child: Container(
-              color: Constants.selectedModelOrangeBgColor, height: 30, width: 77,
-              // child: Text('Area A',
-              // ),
-              child: Container(
-                alignment: Alignment.center,
-                child:Constants.mediumWhiteTextWidget('Area A', 15, Colors.white),
-              )
-            ),
+            child: GestureDetector(onTap: () {
+                _actionClick(0);
+            },  child: Container(
+                decoration: BoxDecoration(
+         color:  _currentIndex == 0 ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor,
+         borderRadius: BorderRadius.circular(4),
+                    ),
+         height: 30,
+         width: 77,
+       child: Container(
+         alignment: Alignment.center,
+         child:Constants.mediumWhiteTextWidget('Area A', 15, _currentIndex == 0? Colors.white : Constants.grayTextColor),
+       )
+     ), ),
           ),
           Positioned(
             top: 5,
             right: 5,
-            child: Container(
-               color: Constants.selectModelBgColor, height: 30, width: 77,
-                child: Container(
-                 alignment: Alignment.center,
-                 child:Constants.mediumWhiteTextWidget('Area B', 15, Constants.grayTextColor)
-                ),
+              child: GestureDetector(onTap: () {
+                print(44442333);
+                _actionClick(1);
+
+              }, child: Container(
+              decoration: BoxDecoration(
+                color: _currentIndex == 0 ? Constants.selectModelBgColor : Constants.selectedModelOrangeBgColor,
+                borderRadius: BorderRadius.circular(4),
               ),
+              height: 30, width: 77,
+              child: Container(
+                  alignment: Alignment.center,
+                  child:Constants.mediumWhiteTextWidget('Area B', 15,_currentIndex == 0 ? Constants.grayTextColor : Colors.white),
+              ),
+            ),)
             ),
         ],
       ),
