@@ -128,7 +128,7 @@ class _MyStatsBarChatViewState extends State<MyStatsBarChatView> {
                 // minimum: 0, // 设置Y轴的最小值
                 // maximum: 10, // 设置Y轴的最大值
               ),
-              tooltipBehavior: _tooltipBehavior,
+              // tooltipBehavior: _tooltipBehavior,
               series: <CartesianSeries<MyStatsModel, num>>[
                 // Renders column chart
                 ColumnSeries<MyStatsModel, num>(

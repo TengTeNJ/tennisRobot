@@ -22,7 +22,7 @@ class _ActionDataListViewState extends State<ActionDataListView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // 这里是mock数据 数据有空了需要移除
+    // 这里是mock数据 实际数据有了后需要移除
     for (int i = 0; i < 50; i++) {
       MyStatsModel model = MyStatsModel();
       if ([3, 5, 6, 12, 13, 14, 19, 20, 21].contains(i)) {
