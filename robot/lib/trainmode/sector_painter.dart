@@ -2,9 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:tennis_robot/constant/constants.dart';
-
-
 /// 扇形
 class SectorPainter extends CustomPainter {
 

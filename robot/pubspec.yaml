@@ -91,5 +91,8 @@ flutter:
     - family: DS-DIGI
       fonts:
         - asset: fonts/DS-DIGI.ttf
+    - family: tengxun
+      fonts:
+        - asset: fonts/tengxun.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

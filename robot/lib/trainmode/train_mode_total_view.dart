@@ -44,8 +44,8 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
     return Stack(
       children: [
         Positioned(
-            left: 24,
-            top: 18,
+            left: 135,
+            top: 181,
             child: Container(
               child: RobotCameraRotateView(),
             )
