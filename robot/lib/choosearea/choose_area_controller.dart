@@ -162,7 +162,10 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                        color: Constants.selectedModelBgColor,
                      ),
                    ),
-                 )
+                 ) ,
+                 SizedBox(
+                   height: 60,
+                 ),
                ],
              ),
            ),

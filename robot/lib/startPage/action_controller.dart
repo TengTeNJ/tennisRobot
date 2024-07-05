@@ -28,7 +28,13 @@ class _ActionControllerState extends State<ActionController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Constants.actionRegularGreyTextWidget('Robot', 22),
+                  Text('Robot',
+                    style: TextStyle(
+                      fontFamily: 'tengxun',
+                      color: Colors.white,
+                      fontSize: 22,
+                    ),
+                  ),
                   GestureDetector(
                       child:Container(
                         width: 40,

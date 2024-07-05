@@ -47,7 +47,8 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                           ((Constants.screenWidth(context) - 40) / 2.0)),
                     );
                     print('(Constants.screenWidth(context) - 40 / 2.0)=${((Constants.screenWidth(context) - 40 )/ 2.0)}');
-                    print('details.delta;=${position}');
+                    print('details.delta.dx;=${position.dx}');
+                    print('details.delta.dy;=${position.dy}');
 
                   });
                 },

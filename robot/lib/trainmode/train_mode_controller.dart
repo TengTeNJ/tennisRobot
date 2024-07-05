@@ -99,8 +99,9 @@ class _TrainModeControllerState extends State<TrainModeController> {
                 : Container(),
             mode == 3
                 ? Container(
-              margin: EdgeInsets.only(left: 20, right: 20),
-              child: RemoteControlView(),
+              margin: EdgeInsets.only(left: 20, right: 20,top: 88),
+              child:
+              RemoteControlView(),
             )
                 : Container(
               margin: EdgeInsets.only(top: 10),
@@ -138,7 +139,6 @@ class _TrainModeControllerState extends State<TrainModeController> {
               child: RobotFunctionSwitchView(
                 onTapClick: (index) {
                   modeChange(index);
-
                   if (index == 1) {
                       TTDialog.robotEndTaskDialog(context, () async {
                       NavigatorUtil.pop();
@@ -148,13 +148,13 @@ class _TrainModeControllerState extends State<TrainModeController> {
                       NavigatorUtil.pop();
                     });
                   } else if (index == 3) {
-                    TTDialog.robotModeAlertDialog(context, () async {
+                      TTDialog.robotModeAlertDialog(context, () async {
                       NavigatorUtil.pop();
 
                     });
                   }
 
-                },
+                  },
               ),
             ),
             SizedBox(
