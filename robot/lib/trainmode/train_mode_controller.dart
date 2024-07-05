@@ -33,7 +33,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.darkControllerColor,
-      body: SingleChildScrollView(
+      body: Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           // crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +41,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
             Container(
               width: Constants.screenWidth(context),
               height: 40,
-              margin: EdgeInsets.only(top: 67, left: 20),
+              margin: EdgeInsets.only(top: 56, left: 20),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,7 +69,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                     alignment: Alignment.center,
                     child: mode == 3
                         ? ButtonSwitchView(
-                        leftTitle: 'Retrieve', rightTitle: 'Pause')
+                            leftTitle: 'Retrieve', rightTitle: 'Pause')
                         : ModeSwitchView(),
                   ),
                   Container(
@@ -77,92 +77,83 @@ class _TrainModeControllerState extends State<TrainModeController> {
                     width: 32,
                     height: 16,
                     child: Image(
-                      image: AssetImage('images/resetmode/mode_battery_icon.png'),
+                      image:
+                          AssetImage('images/resetmode/mode_battery_icon.png'),
                     ),
                   ),
                 ],
               ),
             ),
-            mode == 2
-                ? Container(
-              margin: EdgeInsets.only(top: 18),
-              child: RobotRouteView(),
-              // child: RobotMoveView(),
-            )
-                : mode != 3
-                ? Container(
-              margin: EdgeInsets.only(top: 18),
-              child: SizedBox(
-                height: 60,
-              ),
-            )
-                : Container(),
-            mode == 3
-                ? Container(
-              margin: EdgeInsets.only(left: 20, right: 20,top: 88),
-              child:
-              RemoteControlView(),
-            )
-                : Container(
-              margin: EdgeInsets.only(top: 10),
-              // child: Image(image: AssetImage('images/connect/select_area_line.png'),
-              // width: Constants.screenWidth(context),
-              // height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 180,
-              // ),
-              //
-
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    child: Image(
-                      image:
-                      AssetImage('images/connect/select_area_line.png'),
-                    ),
-                    width: Constants.screenWidth(context),
-                    height: (Constants.screenWidth(context) - 58 * 2) *
-                        (813 / 522) /
-                        2 +
-                        180,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                mode == 2
+                    ? Container(
+                  margin: EdgeInsets.only(left: 10,right: 10),
+                  color: Colors.red,
+                  child: RobotRouteView(),
+                  // child: RobotMoveView(),
+                )
+                    : Container(),
+                mode == 3
+                    ? Container(
+                  child: RemoteControlView(),
+                )
+                    : Container(
+                  margin: EdgeInsets.only(top: 12),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        child: Image(
+                          image: AssetImage(
+                              'images/connect/select_area_line.png'),
+                        ),
+                        width: Constants.screenWidth(context),
+                        height:
+                        (Constants.screenWidth(context) - 58 * 2) *
+                            (813 / 522) /
+                            2 +
+                            180,
+                      ),
+                      mode == 1
+                          ? Positioned(
+                          left: 16,
+                          right: 16,
+                          top: 100,
+                          child: TrainModeTotalView())
+                          : Positioned(
+                        child: Container(),
+                      ),
+                    ],
                   ),
-                  mode == 1
-                      ? Positioned(
-                      left: 24, top: 100, child: TrainModeTotalView())
-                      : Positioned(
-                    child: Container(),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             Container(
-              margin: EdgeInsets.only(top: 70),
+              margin: EdgeInsets.only(bottom: 56),
               child: RobotFunctionSwitchView(
                 onTapClick: (index) {
+                  print('mode=====${index}');
                   modeChange(index);
                   if (index == 1) {
-                      TTDialog.robotEndTaskDialog(context, () async {
+                    TTDialog.robotEndTaskDialog(context, () async {
                       NavigatorUtil.pop();
                     });
                   } else if (index == 2) {
-                      TTDialog.robotEXceptionDialog(context, () async {
+                    TTDialog.robotEXceptionDialog(context, () async {
                       NavigatorUtil.pop();
                     });
                   } else if (index == 3) {
-                      TTDialog.robotModeAlertDialog(context, () async {
+                    TTDialog.robotModeAlertDialog(context, () async {
                       NavigatorUtil.pop();
-
                     });
                   }
-
-                  },
+                },
               ),
             ),
-            SizedBox(
-              height: 60,
-            )
           ],
         ),
-
       ),
     );
   }

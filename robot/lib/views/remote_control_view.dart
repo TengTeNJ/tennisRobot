@@ -11,7 +11,7 @@ class RemoteControlView extends StatefulWidget {
 
 class _RemoteControlViewState extends State<RemoteControlView> {
   Offset position = Offset(0, 0); // 初始位置为试图A的中心
-
+  bool isMove = false; // 滑动标识
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,6 +33,12 @@ class _RemoteControlViewState extends State<RemoteControlView> {
               left: (Constants.screenWidth(context) - 40 - 44) / 2.0,
               top: (Constants.screenWidth(context) - 40 - 44) / 2.0,
               child: GestureDetector(
+                onPanStart: (details) {
+                  setState(() {
+                    // 开始拖拽
+                    isMove = true;
+                  });
+                },
                 onPanUpdate: (details) {
                   // 更新圆点的位置
                   setState(() {
@@ -40,28 +46,28 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                     // 限制圆点在试图A内部移动
                     position = Offset(
                       position.dx.clamp(
-                          -((Constants.screenWidth(context) - 40 )/ 2.0),
-                          ((Constants.screenWidth(context) - 40)) / 2.0),
+                          -(((Constants.screenWidth(context) - 40) / 2.0)) ,
+                          ((Constants.screenWidth(context) - 40)) / 2.0) ,
                       position.dy.clamp(
-                          -((Constants.screenWidth(context) - 40) / 2.0),
+                          -(((Constants.screenWidth(context) - 40) / 2.0)),
                           ((Constants.screenWidth(context) - 40) / 2.0)),
                     );
-                    print('(Constants.screenWidth(context) - 40 / 2.0)=${((Constants.screenWidth(context) - 40 )/ 2.0)}');
-                    print('details.delta.dx;=${position.dx}');
-                    print('details.delta.dy;=${position.dy}');
-
                   });
                 },
                 onPanEnd: (details) {
                   // 手指松开时，将圆点移动回试图A的中心
                   setState(() {
+                    // 结束拖拽
                     position = Offset(0, 0);
+                    isMove = false;
                   });
                 },
                 child: Transform.translate(
                   offset: position,
                   child: Image(
-                    image: AssetImage('images/connect/control_point.png'),
+                    image: AssetImage(isMove
+                        ? 'images/connect/control_point_move.png'
+                        : 'images/connect/control_point.png'),
                     height: 44,
                   ),
                 ),

@@ -77,6 +77,9 @@ class _RobotFunctionSwitchViewState extends State<RobotFunctionSwitchView> {
          children: [
            GestureDetector(onTap: (){
              print('shutdown');
+             if (widget.onTapClick != null) {
+               widget.onTapClick!(0);
+             }
              _actionBtnClick(0);
            },
              child:Container(

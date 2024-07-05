@@ -18,8 +18,8 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
       strokeWidth: 2,
       color: Constants.selectedModelBgColor,
       child: Container(
-        width: 354,
-        height: 354,
+        width: Constants.screenWidth(context) - 32,
+        height: Constants.screenWidth(context) - 32,
         color: Color.fromRGBO(77, 35, 10, 0.3),
       ),
     );
