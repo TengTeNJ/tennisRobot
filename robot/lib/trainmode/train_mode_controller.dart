@@ -90,7 +90,6 @@ class _TrainModeControllerState extends State<TrainModeController> {
                 mode == 2
                     ? Container(
                   margin: EdgeInsets.only(left: 10,right: 10),
-                  color: Colors.red,
                   child: RobotRouteView(),
                   // child: RobotMoveView(),
                 )

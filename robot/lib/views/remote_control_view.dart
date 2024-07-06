@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/utils/color.dart';
+import 'dart:math' as math;
 
 class RemoteControlView extends StatefulWidget {
   const RemoteControlView({super.key});
@@ -43,15 +44,17 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                   // 更新圆点的位置
                   setState(() {
                     position += details.delta;
+                    // position = Offset(
+                    //   position.dx.clamp(
+                    //       -(((Constants.screenWidth(context) - 40) / 2.0)),
+                    //       ((Constants.screenWidth(context) - 40)) / 2.0),
+                    //   position.dy.clamp(
+                    //       -(((Constants.screenWidth(context) - 40) / 2.0)),
+                    //       ((Constants.screenWidth(context) - 40) / 2.0)),
+                    // );
                     // 限制圆点在试图A内部移动
-                    position = Offset(
-                      position.dx.clamp(
-                          -(((Constants.screenWidth(context) - 40) / 2.0)) ,
-                          ((Constants.screenWidth(context) - 40)) / 2.0) ,
-                      position.dy.clamp(
-                          -(((Constants.screenWidth(context) - 40) / 2.0)),
-                          ((Constants.screenWidth(context) - 40) / 2.0)),
-                    );
+                    position = _clampOffsetToCircle(position, ((Constants.screenWidth(context) - 40) / 2.0));
+
                   });
                 },
                 onPanEnd: (details) {
@@ -75,5 +78,19 @@ class _RemoteControlViewState extends State<RemoteControlView> {
         ],
       ),
     );
+  }
+  /*限制圆环在圆形内拖拽*/
+  Offset _clampOffsetToCircle(Offset offset, double radius) {
+    double distanceSquared = offset.dx * offset.dx + offset.dy * offset.dy;
+    if (distanceSquared <= radius * radius) {
+      // 如果已经在圆内或圆上，则无需调整
+      return offset;
+    } else {
+      // 如果在圆外，则计算到圆边缘的最近点
+      double distance = math.sqrt(distanceSquared);
+      double x = offset.dx * radius / distance;
+      double y = offset.dy * radius / distance;
+      return Offset(x, y);
+    }
   }
 }
