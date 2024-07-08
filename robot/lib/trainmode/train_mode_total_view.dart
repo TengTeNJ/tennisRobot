@@ -52,8 +52,7 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
         ),
         for(int i = 0; i < 100 ; i ++)
           getRandomTenniss,
-         rectBorderWidget,
-
+          rectBorderWidget,
       ],
     );
   }

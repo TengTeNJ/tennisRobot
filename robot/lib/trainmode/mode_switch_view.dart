@@ -16,7 +16,6 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
     setState(() {
         _currentIndex = index;
     });
-
   }
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
                 _actionClick(0);
             },  child: Container(
                 decoration: BoxDecoration(
-         color:  _currentIndex == 0 ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor,
+         color: _currentIndex == 0 ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor,
          borderRadius: BorderRadius.circular(4),
                     ),
          height: 30,
@@ -60,8 +59,8 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
               decoration: BoxDecoration(
                 color: _currentIndex == 0 ? Constants.selectModelBgColor : Constants.selectedModelOrangeBgColor,
                 borderRadius: BorderRadius.circular(4),
-              ),
-              height: 30, width: 77,
+              ),              height: 30, width: 77,
+
               child: Container(
                   alignment: Alignment.center,
                   child:Constants.mediumWhiteTextWidget('Area B', 15,_currentIndex == 0 ? Constants.grayTextColor : Colors.white),

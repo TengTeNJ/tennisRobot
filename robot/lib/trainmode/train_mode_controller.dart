@@ -135,19 +135,19 @@ class _TrainModeControllerState extends State<TrainModeController> {
                 onTapClick: (index) {
                   print('mode=====${index}');
                   modeChange(index);
-                  if (index == 1) {
-                    TTDialog.robotEndTaskDialog(context, () async {
-                      NavigatorUtil.pop();
-                    });
-                  } else if (index == 2) {
-                    TTDialog.robotEXceptionDialog(context, () async {
-                      NavigatorUtil.pop();
-                    });
-                  } else if (index == 3) {
-                    TTDialog.robotModeAlertDialog(context, () async {
-                      NavigatorUtil.pop();
-                    });
-                  }
+                  // if (index == 1) {
+                  //   TTDialog.robotEndTaskDialog(context, () async {
+                  //     NavigatorUtil.pop();
+                  //   });
+                  // } else if (index == 2) {
+                  //   TTDialog.robotEXceptionDialog(context, () async {
+                  //     NavigatorUtil.pop();
+                  //   });
+                  // } else if (index == 3) {
+                  //   TTDialog.robotModeAlertDialog(context, () async {
+                  //     NavigatorUtil.pop();
+                  //   });
+                  // }
                 },
               ),
             ),
