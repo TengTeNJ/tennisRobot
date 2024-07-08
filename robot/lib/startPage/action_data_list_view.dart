@@ -1,10 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/startPage/action_list_view.dart';
 import 'package:tennis_robot/utils/color.dart';
 import 'package:tennis_robot/views/data_bar_view.dart';
-
 import '../models/my_status_model.dart';
 
 class ActionDataListView extends StatefulWidget {
@@ -89,8 +87,8 @@ class _ActionDataListViewState extends State<ActionDataListView> {
             ActionListView(
               assetPath: 'images/connect/today_use_time.png',
               title: 'Today Use',
-              desc: '60',
-              unit: 'min',
+              desc: '60000',
+              unit: 'mins',
             ),
             ActionListView(
                 assetPath: 'images/connect/today_cal.png',

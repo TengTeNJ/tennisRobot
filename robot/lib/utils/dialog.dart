@@ -70,9 +70,6 @@ class TTDialog {
   }
 }
 
-
-
-
 /*机器人模式提示弹窗*/
 class RobotModelAlertDialog extends StatelessWidget {
   Function exchange;
