@@ -12,7 +12,13 @@ class ChooseAreaController extends StatefulWidget {
   State<ChooseAreaController> createState() => _ChooseAreaControllerState();
 }
 
+enum Mode {
+  remin, // 起始位提醒
+  chooseArea // 区域选择
+}
+
 class _ChooseAreaControllerState extends State<ChooseAreaController> {
+  Mode currentMode = Mode.remin;
   Color _currentColor = Constants.selectedModelBgColor;
   Color _BcurrentColor = Constants.baseTextGrayBgColor;
 
@@ -52,7 +58,7 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                    margin: EdgeInsets.only(top: 90 ,left: 70 ,right: 70),
                    // child: Constants.mediumWhiteTextWidget('Please select the area where the robot needs to work', 16, Colors.white),
                    child:Text(
-                     'Please select the area where the robot needs to work',
+                     currentMode == Mode.chooseArea ? 'Please select the area where the robot needs to work' :'Please place the robot at the center of the net on the field',
                      textAlign: TextAlign.center,
                      overflow: TextOverflow.visible,
                      style: TextStyle(
@@ -68,36 +74,53 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                  Container(
                    margin: EdgeInsets.only(top: 25),
                    child: Column(
-                     children: [
-                       GestureDetector(onTap: (){
-                         _changeColor();
-                       },
-                         child: Container(
-                           decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(4),
-                               color: _currentColor),
-                           width: 66,
-                           height: 24,
-                           child: Center(
-                             child: Constants.mediumWhiteTextWidget('A', 20, Colors.white),
-                           ),
+
+                     children:
+                     currentMode == Mode.chooseArea ?  [
+                     GestureDetector(onTap: (){
+                       _changeColor();
+                     },
+                       child: Container(
+                         decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(4),
+                             color: _currentColor),
+                         width: 66,
+                         height: 24,
+                         child: Center(
+                           child: Constants.mediumWhiteTextWidget('A', 20, Colors.white),
                          ),
-                       )
-                     ],
+                       ),
+                     )
+                     ] : [ SizedBox(height: 24,)]
+
                    ),
                  ),
                  Row(
                    crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
-                     Image.asset(
-                       'images/connect/robot_icon.png',
+
+                     currentMode == Mode.remin ?
+                     Column(
+                       children: [
+                         Image.asset(
+                             width: 14,
+                             height: 14,
+                             'images/connect/hook_icon.png'
+                         ),
+                         SizedBox(
+                           height: 7,
+                         ),
+                         Image.asset(
+                           currentMode == Mode.chooseArea ? 'images/connect/robot_icon.png' : 'images/connect/rectangle_icon.png',
+                           width: 48,
+                           height: 24,
+                         ),
+                       ]
+                     ) :  Image.asset(
+                       currentMode == Mode.chooseArea ? 'images/connect/robot_icon.png' : 'images/connect/rectangle_icon.png',
                        width: 48,
                        height: 24,
                      ),
-                     // Container(
-                     //   width: 12 ,
-                     //   height: 6,
-                     // ),
                      Container(
                        width: Constants.screenWidth(context) -58*2 ,
                        margin: EdgeInsets.only(top: 10,left: 8),
@@ -107,7 +130,7 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                            Image.asset('images/connect/select_area_line.png'),
                            Container(
                              margin: EdgeInsets.only(top: _offset, left: 5),
-                             color: Constants.selectedModelTransparencyBgColor,
+                             color: currentMode == Mode.chooseArea ? Constants.selectedModelTransparencyBgColor : Colors.transparent,
                              width: Constants.screenWidth(context) -58*2 ,
                              height: (Constants.screenWidth(context) -58*2) * (813 / 522) / 2 + 50, // 场地高度的一半 +50
                              child: Visibility(
@@ -128,28 +151,35 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                  Container(
                    margin: EdgeInsets.only(top: 10),
                    child: Column(
-                     children: [
-                       GestureDetector(onTap: (){
-                         _changeBAreaColor();
-                       },
-                         child: Container(
-                           decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(4),
-                               color: _BcurrentColor),
-                           width: 66,
-                           height: 24,
-                           child: Center(
-                             child: Constants.mediumWhiteTextWidget('B', 20, Colors.white),
-                           ),
+                     children:
+                     currentMode == Mode.chooseArea ?  [
+                     GestureDetector(onTap: (){
+                       _changeBAreaColor();
+                     },
+                       child: Container(
+                         decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(4),
+                             color: _BcurrentColor),
+                         width: 66,
+                         height: 24,
+                         child: Center(
+                           child: Constants.mediumWhiteTextWidget('B', 20, Colors.white),
                          ),
-                       )
-                     ],
+                       ),
+                     )
+                     ] : [SizedBox(height: 24,)]
+
                    ),
                  ),
 
                  GestureDetector(
                    onTap: (){
-                     NavigatorUtil.push(Routes.trainMode);
+                     if (currentMode == Mode.chooseArea) {
+                       NavigatorUtil.push(Routes.trainMode);
+                     }
+                     setState(() {
+                       currentMode = Mode.chooseArea;
+                     });
                    } ,
                    child: Container(
                      child: Center(
@@ -170,7 +200,6 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
              ),
            ),
          ),
-
       )
     );
   }
