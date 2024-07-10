@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
-
 import '../constant/constants.dart';
 
 class ChooseAreaController extends StatefulWidget {
@@ -13,16 +11,16 @@ class ChooseAreaController extends StatefulWidget {
 }
 
 enum Mode {
-  remin, // 起始位提醒
+  remind, // 起始位提醒
   chooseArea // 区域选择
 }
 
 class _ChooseAreaControllerState extends State<ChooseAreaController> {
-  Mode currentMode = Mode.remin;
+  Mode currentMode = Mode.remind;
   Color _currentColor = Constants.selectedModelBgColor;
   Color _BcurrentColor = Constants.baseTextGrayBgColor;
 
-  bool _isHidden = true;
+  bool _isHidden = false;
   double _offset = 0.0;
 
   void _changeColor() {
@@ -56,7 +54,6 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                  Container(
                    width: Constants.screenWidth(context),
                    margin: EdgeInsets.only(top: 90 ,left: 70 ,right: 70),
-                   // child: Constants.mediumWhiteTextWidget('Please select the area where the robot needs to work', 16, Colors.white),
                    child:Text(
                      currentMode == Mode.chooseArea ? 'Please select the area where the robot needs to work' :'Please place the robot at the center of the net on the field',
                      textAlign: TextAlign.center,
@@ -69,13 +66,11 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                        fontWeight: FontWeight.w500,
                      ),
                    ),
-
                  ),
                  Container(
                    margin: EdgeInsets.only(top: 25),
                    child: Column(
-
-                     children:
+                       children:
                      currentMode == Mode.chooseArea ?  [
                      GestureDetector(onTap: (){
                        _changeColor();
@@ -91,15 +86,14 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                          ),
                        ),
                      )
-                     ] : [ SizedBox(height: 24,)]
+                     ] : [SizedBox(height: 24,)]
 
                    ),
                  ),
                  Row(
                    crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
-
-                     currentMode == Mode.remin ?
+                     currentMode == Mode.remind ?
                      Column(
                        children: [
                          Image.asset(
@@ -116,7 +110,7 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                            height: 24,
                          ),
                        ]
-                     ) :  Image.asset(
+                     ) : Image.asset(
                        currentMode == Mode.chooseArea ? 'images/connect/robot_icon.png' : 'images/connect/rectangle_icon.png',
                        width: 48,
                        height: 24,
@@ -160,15 +154,14 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                          decoration: BoxDecoration(
                              borderRadius: BorderRadius.circular(4),
                              color: _BcurrentColor),
-                         width: 66,
-                         height: 24,
+                         width: 66,height: 24,
+
                          child: Center(
                            child: Constants.mediumWhiteTextWidget('B', 20, Colors.white),
                          ),
                        ),
                      )
                      ] : [SizedBox(height: 24,)]
-
                    ),
                  ),
 
