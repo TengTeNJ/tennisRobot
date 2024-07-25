@@ -169,9 +169,14 @@ class Constants {
   static Color dialogBgColor = Color.fromRGBO(56, 58, 64, 1);
 
 
-
   static String connectRobotText =
       'Connect your phone to the Bots Wi-Fi name will match your Bots serial number.The password is';
 
-
+  static String kTcpIPAdress = '192.168.10.48';
+  static int kTcpPort = 12345;
 }
+const kDataFrameHeader = 0xA5; // 数据帧头
+const kDataFrameFoot = 0xAA; // 数据帧尾
+
+// 全局监听
+const kTCPDataListen = 'tcp_data_listen'; //  TCP数据监听
