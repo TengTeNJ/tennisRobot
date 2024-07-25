@@ -44,7 +44,8 @@ class RobotManager {
   };
   * */
   Function(TCPDataType type)? dataChange;
-   // 数据改变时内部调用
+
+  // 数据改变时内部调用
   _triggerCallback({TCPDataType type = TCPDataType.none}) {
     dataChange?.call(type);
   }
@@ -100,6 +101,12 @@ class RobotManager {
   /*设置机器人移动角度*/
   setRobotAngle(int angle) {
     List<int> data = setAngleData(angle);
+    _utpUtil?.sendData(data.toString());
+  }
+
+  /*主动请求某个数据*/
+  manualFetch(ManualFetchType type) {
+    List<int> data = manualFetchData(type);
     _utpUtil?.sendData(data.toString());
   }
 }
@@ -188,13 +195,43 @@ handleData(List<int> element) {
       // 电量
       RobotManager().dataModel.powerValue = power_data;
       print('电量=======${power_data}');
-      RobotManager()._triggerCallback(type:TCPDataType.deviceInfo);
+      RobotManager()._triggerCallback(type: TCPDataType.deviceInfo);
+      break;
+    case ResponseCMDType.workStatu:
+      int statu_data = element[2];
+      RobotManager().dataModel.statu = [
+        RobotStatu.standby,
+        RobotStatu.ready,
+        RobotStatu.work,
+        RobotStatu.error
+      ][statu_data];
+      print('机器人工作状态=======${statu_data}');
+      RobotManager()._triggerCallback(type: TCPDataType.workStatu);
+      break;
+    case ResponseCMDType.mode:
+      int mode_data = element[2];
+      RobotManager().dataModel.mode =
+          [RobotMode.rest, RobotMode.training, RobotMode.remote][mode_data];
+      print('机器人模式=======${mode_data}');
+      RobotManager()._triggerCallback(type: TCPDataType.mode);
       break;
     case ResponseCMDType.speed:
       int speed_data = element[2];
       RobotManager().dataModel.speed = speed_data;
       print('速度=======${speed_data}');
-      RobotManager()._triggerCallback(type:TCPDataType.speed);
+      RobotManager()._triggerCallback(type: TCPDataType.speed);
+      break;
+    case ResponseCMDType.warnInfo:
+      int warn_data = element[2];
+      RobotManager().dataModel.warnStatu = warn_data;
+      print('告警信息=======${warn_data}');
+      RobotManager()._triggerCallback(type: TCPDataType.warnInfo);
+      break;
+    case ResponseCMDType.errorInfo:
+      int error_data = element[2];
+      RobotManager().dataModel.errorStatu = error_data;
+      print('故障信息=======${error_data}');
+      RobotManager()._triggerCallback(type: TCPDataType.errorInfo);
       break;
     case ResponseCMDType.coordinate:
       if (element.length < 8) {
@@ -236,7 +273,7 @@ handleData(List<int> element) {
       print('机器人角度=${angle_flag ? angle_value : (0 - angle_value)}');
       RobotManager().dataModel.yPoint =
           angle_flag ? angle_value : (0 - angle_value);
-      RobotManager()._triggerCallback(type:TCPDataType.coordinate);
+      RobotManager()._triggerCallback(type: TCPDataType.coordinate);
 
       break;
     case ResponseCMDType.ballsInView:
@@ -279,7 +316,7 @@ handleData(List<int> element) {
         print('第${i + 1}个球Y坐标=${y_flag ? y_value : (0 - y_value)}');
         ball.yPoint = y_flag ? y_value : (0 - y_value);
       }
-      RobotManager()._triggerCallback(type:TCPDataType.ballsInView);
+      RobotManager()._triggerCallback(type: TCPDataType.ballsInView);
       break;
   }
 }

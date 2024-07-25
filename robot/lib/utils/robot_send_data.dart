@@ -1,6 +1,16 @@
 import 'package:tennis_robot/constant/constants.dart';
-
 import '../models/robot_data_model.dart';
+
+enum ManualFetchType {
+  device, // 设备信息
+  robotStatu,
+  warnInfo,
+  errorInfo,
+  mode,
+  speed,
+  coordinate,
+  ballsInView
+}
 
 /*切换机器人模式*/
 List<int> changeRobotMode(RobotMode mode) {
@@ -26,7 +36,7 @@ List<int> clearCountData() {
 }
 
 /*设置速度*/
-List<int> setSpeedData(int  speed) {
+List<int> setSpeedData(int speed) {
   int start = kDataFrameHeader;
   int length = 6;
   int cmd = 0x41;
@@ -38,7 +48,7 @@ List<int> setSpeedData(int  speed) {
 }
 
 /*设置区域*/
-List<int> setAreaData(int  area) {
+List<int> setAreaData(int area) {
   int start = kDataFrameHeader;
   int length = 6;
   int cmd = 0x39;
@@ -50,7 +60,7 @@ List<int> setAreaData(int  area) {
 }
 
 /*设置角度*/
-List<int> setAngleData(int  angle) {
+List<int> setAngleData(int angle) {
   int start = kDataFrameHeader;
   int length = 6;
   int cmd = 0x45;
@@ -61,6 +71,25 @@ List<int> setAngleData(int  angle) {
   return [start, length, cmd, data, cs, end];
 }
 
-
-
-
+List<int> manualFetchData(ManualFetchType type){
+  List<int> _cmds = [
+    0x20,
+    0x32,
+    0x33,
+    0x34,
+    0x36,
+    0x42,
+    0x43,
+    0x44
+  ];
+  if(type.index  + 1> _cmds.length){
+    return [];
+  }
+  int start = kDataFrameHeader;
+  int length = 5;
+  int cmd = _cmds[type.index];
+  int cs = start + length + cmd;
+  int end = kDataFrameFoot;
+  print('主动获取:${[start, length, cmd, cs, end]}');
+  return [start, length, cmd, cs, end];
+}
