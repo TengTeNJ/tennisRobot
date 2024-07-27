@@ -6,7 +6,11 @@ import 'package:tennis_robot/trainmode/robot_rotate_view.dart';
 
 /// 休息模式下 机器人軌跡view
 class TrainModeTotalView extends StatefulWidget {
-  const TrainModeTotalView({super.key});
+  int leftMargin;
+  int topMargin;
+  int robotAngle;
+
+  TrainModeTotalView({required this.leftMargin,required this.topMargin, required this.robotAngle});
 
   @override
   State<TrainModeTotalView> createState() => _TrainModeTotalViewState();
@@ -14,8 +18,8 @@ class TrainModeTotalView extends StatefulWidget {
 
 class _TrainModeTotalViewState extends State<TrainModeTotalView> {
   double _turns = 0.1;
-  double _leftMargin = 10;
-  double _topMargin = 181;
+  // double _leftMargin = 10;
+  // double _topMargin = 181;
 
   Widget get rectBorderWidget {
     return DottedBorder(
@@ -47,7 +51,7 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        for(int i = 0; i < 200 ; i ++)
+        for(int i = 0; i < 100 ; i ++)
           getRandomTenniss,
           rectBorderWidget,
         ElevatedButton(
@@ -58,15 +62,15 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
          child: const Text("right"),
           onPressed: () {
             setState(() {
-              _leftMargin += 1;
-              _topMargin += 1;
+              // _leftMargin += 1;
+              // _topMargin += 1;
               // _turns -= 0.02;
             });
           },
         ),
         Positioned(
-            left: _leftMargin,
-            top: _topMargin,
+            left: widget.leftMargin.toDouble(),
+            top: widget.topMargin.toDouble(),
             child: RobotRotateView(
               turns: _turns,
               duration: 1000,

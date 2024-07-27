@@ -2,15 +2,18 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/customAppBar.dart';
+import 'package:tennis_robot/models/robot_data_model.dart';
 import 'package:tennis_robot/trainmode/mode_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_function_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/trainmode/robot_route_view.dart';
 import 'package:tennis_robot/trainmode/train_mode_total_view.dart';
 import 'package:tennis_robot/utils/dialog.dart';
+import 'package:tennis_robot/utils/robot_send_data.dart';
 import 'package:tennis_robot/views/button_switch_view.dart';
 import 'package:tennis_robot/views/remote_control_view.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
 
 /// 训练模式
 class TrainModeController extends StatefulWidget {
@@ -22,11 +25,61 @@ class TrainModeController extends StatefulWidget {
 
 class _TrainModeControllerState extends State<TrainModeController> {
   int mode = 0;
-
+  int powerLevels = 5;
+  int robotLeftMargin = 0;
+  int robotTopMargin = 0;
+  int robotAngle = 0;
   void modeChange(int index) {
     setState(() {
       mode = index;
     });
+  }
+
+  @override
+   void initState() {
+     super.initState();
+     print('66666${RobotManager().manualFetch(ManualFetchType.device)}');
+     // 监听电量
+     RobotManager().dataChange = (TCPDataType type) {
+       // setState(() {
+         int power = RobotManager().dataModel.powerValue;
+         power = 12;
+         if (0<power && power<20) {
+           powerLevels = 1;
+         } else if (20<power && power < 40){
+           powerLevels = 2;
+         } else if (40<power &&power <60) {
+           powerLevels = 3;
+         } else if (60<power &&power <80) {
+           powerLevels = 4;
+         } else {
+           powerLevels = 5;
+         }
+       // });
+       if (type == TCPDataType.deviceInfo) {
+         print('robot battery ${RobotManager().dataModel.powerValue}');
+       } else if(type == TCPDataType.speed) {
+         print('robot speed ${RobotManager().dataModel.speed}');
+       } else if(type == TCPDataType.coordinate) { // 机器人坐标
+         // 机器人X坐标
+         int xPoint = RobotManager().dataModel.xPoint;
+         // 机器人Y坐标
+         int yPoint = RobotManager().dataModel.yPoint;
+         // 机器人角度
+         int robotAngle = RobotManager().dataModel.angle;
+
+         // 机器人坐标转换
+         xPoint = 10; yPoint = 100;
+         // setState(() {;
+           robotLeftMargin = xPoint + 44;
+           robotTopMargin = yPoint + 68;
+         // });
+         print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
+       } else if(type == TCPDataType.ballsInView) { // 视野中看到的球
+         List balls = RobotManager().dataModel.inViewBallList;
+         print('robot ballsInView ${balls}');
+       }
+     };
   }
 
   @override
@@ -78,7 +131,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                     height: 16,
                     child: Image(
                       image:
-                          AssetImage('images/resetmode/mode_battery_icon.png'),
+                          AssetImage('images/resetmode/mode_battery_${powerLevels}.png'),
                     ),
                   ),
                 ],
@@ -120,7 +173,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                           left: 16,
                           right: 16,
                           top: 100,
-                          child: TrainModeTotalView())
+                          child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: 3,))
                           : Positioned(
                         child: Container(),
                       ),
@@ -135,19 +188,25 @@ class _TrainModeControllerState extends State<TrainModeController> {
                 onTapClick: (index) {
                   print('mode=====${index}');
                   modeChange(index);
-                  // if (index == 1) {
-                  //   TTDialog.robotEndTaskDialog(context, () async {
-                  //     NavigatorUtil.pop();
-                  //   });
-                  // } else if (index == 2) {
-                  //   TTDialog.robotEXceptionDialog(context, () async {
-                  //     NavigatorUtil.pop();
-                  //   });
-                  // } else if (index == 3) {
-                  //   TTDialog.robotModeAlertDialog(context, () async {
-                  //     NavigatorUtil.pop();
-                  //   });
-                  // }
+                  if (index == 1) {
+                    // 休息模式
+                    RobotManager().setRobotMode(RobotMode.rest);
+                    TTDialog.robotEndTaskDialog(context, () async {
+                      NavigatorUtil.pop();
+                    });
+                  } else if (index == 2) {
+                    // 训练模式
+                    RobotManager().setRobotMode(RobotMode.training);
+                    TTDialog.robotEXceptionDialog(context, () async {
+                      NavigatorUtil.pop();
+                    });
+                  } else if (index == 3) {
+                    // 遥控模式
+                    RobotManager().setRobotMode(RobotMode.remote);
+                    TTDialog.robotModeAlertDialog(context, () async {
+                      NavigatorUtil.pop();
+                    });
+                  }
                 },
               ),
             ),

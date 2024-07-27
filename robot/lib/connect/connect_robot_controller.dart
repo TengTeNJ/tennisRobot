@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
 
 class ConnectRobotController extends StatefulWidget {
   const ConnectRobotController({super.key});
@@ -11,6 +12,7 @@ class ConnectRobotController extends StatefulWidget {
 }
 
 class _ConnectRobotControllerState extends State<ConnectRobotController> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +82,15 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    RobotManager().startTCPConnect();
+                     // 在需要用到的页面进行数据监听 格式如下，根据不同的TCPDataType类型和自己的需求进行页面刷新
+                    RobotManager().dataChange = (TCPDataType type) {
+                      if (type == TCPDataType.speed) {
+                          print('speed123 ${RobotManager().dataModel.speed}');
+                      } else if(type == TCPDataType.deviceInfo) {
+                        print('deviceInfo123 ${RobotManager().dataModel.speed}');
+                      }
+                  };
                     NavigatorUtil.push(Routes.selectMode);
                   },
                   child: Container(

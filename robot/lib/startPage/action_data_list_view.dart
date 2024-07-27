@@ -87,7 +87,7 @@ class _ActionDataListViewState extends State<ActionDataListView> {
             ActionListView(
               assetPath: 'images/connect/today_use_time.png',
               title: 'Today Use',
-              desc: '60000',
+              desc: '600',
               unit: 'mins',
             ),
             ActionListView(

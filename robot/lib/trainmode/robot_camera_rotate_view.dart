@@ -26,7 +26,7 @@ class _RobotCameraRotateViewState extends State<RobotCameraRotateView> {
           // color: Colors.blue,
           margin: EdgeInsets.only(left: 0),
           child: CustomPaint(
-            size: const Size(100, 100),
+            size: const Size(200, 200),
             painter: SectorPainter(),
           ),
         ),

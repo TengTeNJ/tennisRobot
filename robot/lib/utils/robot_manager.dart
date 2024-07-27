@@ -271,7 +271,7 @@ handleData(List<int> element) {
           angle1String.substring(1, angle1String.length) + angle2String;
       int angle_value = binaryStringToDecimal(angle_valueString);
       print('机器人角度=${angle_flag ? angle_value : (0 - angle_value)}');
-      RobotManager().dataModel.yPoint =
+      RobotManager().dataModel.angle =
           angle_flag ? angle_value : (0 - angle_value);
       RobotManager()._triggerCallback(type: TCPDataType.coordinate);
 
@@ -315,6 +315,7 @@ handleData(List<int> element) {
         int y_value = binaryStringToDecimal(y_valueString);
         print('第${i + 1}个球Y坐标=${y_flag ? y_value : (0 - y_value)}');
         ball.yPoint = y_flag ? y_value : (0 - y_value);
+        RobotManager().dataModel.inViewBallList.add(ball);
       }
       RobotManager()._triggerCallback(type: TCPDataType.ballsInView);
       break;

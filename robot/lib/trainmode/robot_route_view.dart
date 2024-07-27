@@ -56,7 +56,7 @@ class _RobotRouteViewState extends State<RobotRouteView> {
         children: <Widget>[
            rectBorderWidget,
           Positioned(
-           left: 24,
+           left: 28,
            top: 18,
            child: Container(
              alignment: Alignment.center,

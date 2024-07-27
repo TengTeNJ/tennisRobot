@@ -3,6 +3,8 @@ import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/utils/color.dart';
 import 'dart:math' as math;
 
+import 'package:tennis_robot/utils/robot_manager.dart';
+
 class RemoteControlView extends StatefulWidget {
   const RemoteControlView({super.key});
 
@@ -44,6 +46,8 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                   // 更新圆点的位置
                   setState(() {
                     position += details.delta;
+                    // 设置机器人角度
+                    RobotManager().setRobotAngle(30);
                     // position = Offset(
                     //   position.dx.clamp(
                     //       -(((Constants.screenWidth(context) - 40) / 2.0)),
