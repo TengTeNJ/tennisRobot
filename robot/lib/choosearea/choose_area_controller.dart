@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
 import '../constant/constants.dart';
 
 class ChooseAreaController extends StatefulWidget {
@@ -74,6 +75,8 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                      currentMode == Mode.chooseArea ?  [
                      GestureDetector(onTap: (){
                        _changeColor();
+                       // 设置机器人区域
+                       RobotManager().setRobotArea(0);
                      },
                        child: Container(
                          decoration: BoxDecoration(
@@ -149,6 +152,8 @@ class _ChooseAreaControllerState extends State<ChooseAreaController> {
                      currentMode == Mode.chooseArea ?  [
                      GestureDetector(onTap: (){
                        _changeBAreaColor();
+                       // 设置机器人区域
+                       RobotManager().setRobotArea(1);
                      },
                        child: Container(
                          decoration: BoxDecoration(

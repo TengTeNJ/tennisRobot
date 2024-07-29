@@ -1,9 +1,10 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
+import 'package:tennis_robot/models/robot_data_model.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
 
 class SelectModeController extends StatefulWidget {
   const SelectModeController({super.key});
@@ -71,6 +72,8 @@ class _SelectModeControllerState extends State<SelectModeController> {
                   children: [
                     GestureDetector(onTap: (){
                       _changeModeRest();
+                      // 选择模式
+                      RobotManager().setRobotMode(RobotMode.training);
                     },
                       child: Container(
                       decoration: BoxDecoration(
@@ -98,7 +101,8 @@ class _SelectModeControllerState extends State<SelectModeController> {
                     SizedBox(width: 8),
                     GestureDetector(onTap: (){
                       print(456);
-                      _changeModeTrain();
+                      // 选择模式
+                      RobotManager().setRobotMode(RobotMode.rest);
                     },
                       child: Container(
                         decoration: BoxDecoration(
