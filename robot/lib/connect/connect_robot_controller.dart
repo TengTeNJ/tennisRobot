@@ -12,6 +12,7 @@ class ConnectRobotController extends StatefulWidget {
 }
 
 class _ConnectRobotControllerState extends State<ConnectRobotController> {
+  bool isConnected = true; // 是否连接上WiFi
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +33,12 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                   ),
                 ),
                 Container(
+                  // color: Colors.red,
                   width: Constants.screenWidth(context),
                   margin: EdgeInsets.only(left: 44, right: 44, top: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Constants.boldBaseTextWidget('', 16),
                       SizedBox(
@@ -44,6 +46,7 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                       ),
 
                       RichText(
+                          textAlign: TextAlign.center,
                           text: TextSpan(
                               text: Constants.connectRobotText,
                               style: TextStyle(
@@ -54,55 +57,66 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                                 fontWeight: FontWeight.w500,
                               ),
                               children: <TextSpan>[
-                            TextSpan(
-                              text: '   "Potent"',
-                              style: TextStyle(
-                                fontFamily: 'SanFranciscoDisplay',
-                                fontSize: 18,
-                                color: Color.fromRGBO(233, 86, 21, 1),
-                                height: 1.8,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ])),
-                      // Text(
-                      //
-                      //   Constants.connectRobotText,
-                      //   overflow: TextOverflow.visible,
-                      //   style: TextStyle(
-                      //     color: Constants.connectTextColor,
-                      //     fontSize: 18,
-                      //     height: 1.8,
-                      //     fontFamily: 'SanFranciscoDisplay',
-                      //     fontWeight: FontWeight.w500,
-                      //   ),
-                      // ),
+                                TextSpan(
+                                  text: '   "Potent"',
+                                  style: TextStyle(
+                                    fontFamily: 'SanFranciscoDisplay',
+                                    fontSize: 18,
+                                    color: Color.fromRGBO(233, 86, 21, 1),
+                                    height: 1.8,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ])),
+                      SizedBox(height: 50),
+                      Text(
+                        "Current Wi-Fi Network",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Constants.connectTextColor,
+                          fontSize: 18,
+                          height: 1.5,
+                          fontFamily: 'SanFranciscoDisplay',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        "Potent Robot",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Constants.connectTextColor,
+                          fontSize: 18,
+                          height: 1.8,
+                          fontFamily: 'SanFranciscoDisplay',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
                     RobotManager().startTCPConnect();
-                     // 在需要用到的页面进行数据监听 格式如下，根据不同的TCPDataType类型和自己的需求进行页面刷新
+                    // 在需要用到的页面进行数据监听 格式如下，根据不同的TCPDataType类型和自己的需求进行页面刷新
                     RobotManager().dataChange = (TCPDataType type) {
                       if (type == TCPDataType.speed) {
-                          print('speed123 ${RobotManager().dataModel.speed}');
+                        print('speed123 ${RobotManager().dataModel.speed}');
                       } else if(type == TCPDataType.deviceInfo) {
                         print('deviceInfo123 ${RobotManager().dataModel.speed}');
                       }
-                  };
+                    };
                     NavigatorUtil.push(Routes.selectMode);
                   },
                   child: Container(
                     child: Center(
                       child: Constants.mediumWhiteTextWidget(
-                          'START', 20, Colors.white),
+                          'Add Robot', 20,isConnected ? Colors.white : Constants.grayTextColor),
                     ),
                     height: 72,
                     margin: EdgeInsets.only(left: 44, right: 44, top: 65),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Constants.selectedModelOrangeBgColor,
+                      color: isConnected ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor ,
                     ),
                   ),
                 )
