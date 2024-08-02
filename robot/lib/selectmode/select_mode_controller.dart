@@ -101,6 +101,7 @@ class _SelectModeControllerState extends State<SelectModeController> {
                     SizedBox(width: 8),
                     GestureDetector(onTap: (){
                       print(456);
+                      _changeModeTrain();
                       // 选择模式
                       RobotManager().setRobotMode(RobotMode.rest);
                     },
