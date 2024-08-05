@@ -120,7 +120,8 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                         color: isConnected ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor ,
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
