@@ -47,7 +47,7 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                   setState(() {
                     position += details.delta;
                     // 设置机器人角度
-                    RobotManager().setRobotAngle(30);
+                    // RobotManager().setRobotAngle(30);
                     // position = Offset(
                     //   position.dx.clamp(
                     //       -(((Constants.screenWidth(context) - 40) / 2.0)),
@@ -64,6 +64,12 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                 onPanEnd: (details) {
                   // 手指松开时，将圆点移动回试图A的中心
                   setState(() {
+                    print('positions =-==--=${position}');
+                    final single = math.tan(position.dy / position.dx);
+                    var angle = math.atan2(position.dy, position.dx);
+                    var degrees = angle * (180 / math.pi) + 90;
+                    print('角度${degrees}');
+                    RobotManager().setRobotAngle(degrees.toInt());
                     // 结束拖拽
                     position = Offset(0, 0);
                     isMove = false;
