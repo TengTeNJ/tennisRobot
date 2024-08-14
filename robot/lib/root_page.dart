@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:tennis_robot/startPage/action_controller.dart';
@@ -8,6 +10,7 @@ import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
 
 import 'constant/constants.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RootPageController extends StatefulWidget {
   const RootPageController({super.key});
@@ -29,6 +32,7 @@ class _RootPageControllerState extends State<RootPageController> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    locationRequest();
     _pageController = PageController()
      ..addListener(() {
        // 获取当前滑动页面的索引 (取整)
@@ -40,6 +44,16 @@ class _RootPageControllerState extends State<RootPageController> {
          });
        }
     });
+  }
+
+  void locationRequest() async {
+     if (Platform.isAndroid) {
+       PermissionStatus location =
+       await Permission.location.request();
+       if (location == PermissionStatus.granted) {
+         print('666 location');
+       }
+     }
   }
 
   @override
