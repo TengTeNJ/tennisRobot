@@ -1,9 +1,11 @@
+
 import 'package:flutter/material.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
 import 'package:tennis_robot/utils/robot_manager.dart';
-
+// import 'dart:html';
 class ConnectRobotController extends StatefulWidget {
   const ConnectRobotController({super.key});
 
@@ -12,8 +14,25 @@ class ConnectRobotController extends StatefulWidget {
 }
 
 class _ConnectRobotControllerState extends State<ConnectRobotController> {
-  bool isConnected = false; // 是否连接上WiFi
+  bool isConnected = true; // 是否连接上WiFi
+  var currentWifiName = 'Potent Robot';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getWifiName();
+  }
 
+  void getWifiName() async {
+    final info = NetworkInfo();
+    final wifiName = await info.getWifiName();
+    print('66666${wifiName}');
+    setState(() {
+      if(wifiName != null){
+        currentWifiName = wifiName!;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +101,7 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                           ),
                         ),
                         Text(
-                          "Potent Robot",
+                          currentWifiName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Constants.connectTextColor,
