@@ -4,13 +4,16 @@ import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/trainmode/robot_camera_rotate_view.dart';
 import 'package:tennis_robot/trainmode/robot_rotate_view.dart';
 
+import '../models/ball_model.dart';
+
 /// 休息模式下 机器人軌跡view
 class TrainModeTotalView extends StatefulWidget {
   int leftMargin;
   int topMargin;
   int robotAngle;
+  List<BallModel> ballList;
 
-  TrainModeTotalView({required this.leftMargin,required this.topMargin, required this.robotAngle});
+  TrainModeTotalView({required this.leftMargin,required this.topMargin, required this.robotAngle, required this.ballList});
 
   @override
   State<TrainModeTotalView> createState() => _TrainModeTotalViewState();
@@ -51,9 +54,20 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        for(int i = 0; i < 100 ; i ++)
+        for(int i = 0; i < 50 ; i ++)
           getRandomTenniss,
           rectBorderWidget,
+         /// 摄像头下真实的网球数据
+          for(int j = 0; j < widget.ballList.length; j ++)
+            Positioned(
+                top: widget.ballList[j].xPoint.toDouble(),
+                left: widget.ballList[j].yPoint.toDouble(),
+                child:Container(
+                   width: 8,
+                   height: 8,
+                   child: Image(image: AssetImage('images/resetmode/tennis_many_icon.png'),),
+                   )
+                ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,

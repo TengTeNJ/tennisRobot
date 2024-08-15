@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/utils/color.dart';
 import 'dart:math' as math;
-
 import 'package:tennis_robot/utils/robot_manager.dart';
 
 class RemoteControlView extends StatefulWidget {
@@ -15,6 +14,8 @@ class RemoteControlView extends StatefulWidget {
 class _RemoteControlViewState extends State<RemoteControlView> {
   Offset position = Offset(0, 0); // 初始位置为试图A的中心
   bool isMove = false; // 滑动标识
+  int index = 0;// 索引，记录第一次拖动的方向
+  Offset firstPosition = Offset(0, 0);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,36 +41,41 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                   setState(() {
                     // 开始拖拽
                     isMove = true;
+
+                    var angle = math.atan2(position.dy, position.dx);
+                    var degrees = angle * (180 / math.pi) + 90;
+                    print('开始拖动时轮盘的角度${degrees}');
                   });
                 },
                 onPanUpdate: (details) {
                   // 更新圆点的位置
                   setState(() {
                     position += details.delta;
-                    // 设置机器人角度
-                    // RobotManager().setRobotAngle(30);
-                    // position = Offset(
-                    //   position.dx.clamp(
-                    //       -(((Constants.screenWidth(context) - 40) / 2.0)),
-                    //       ((Constants.screenWidth(context) - 40)) / 2.0),
-                    //   position.dy.clamp(
-                    //       -(((Constants.screenWidth(context) - 40) / 2.0)),
-                    //       ((Constants.screenWidth(context) - 40) / 2.0)),
-                    // );
                     // 限制圆点在试图A内部移动
                     position = _clampOffsetToCircle(position, ((Constants.screenWidth(context) - 40) / 2.0));
 
+                    var angle = math.atan2(position.dy, position.dx);
+                    var degrees = angle * (180 / math.pi) + 90;
+                    print('拖动时轮盘的角度${degrees}');
+
+                    index += 1;
+                    if (index == 2) {
+                      print('111${degrees}');
+                      RobotManager().setRobotAngle(degrees.toInt());
+                      firstPosition = position;
+                    } else {
+                      var angle = math.atan2(firstPosition.dy, firstPosition.dx);
+                      var degrees = angle * (180 / math.pi) + 90;
+                      print('222${degrees}');
+                      RobotManager().setRobotAngle(degrees.toInt());
+                    }
                   });
                 },
                 onPanEnd: (details) {
                   // 手指松开时，将圆点移动回试图A的中心
                   setState(() {
-                    print('positions =-==--=${position}');
-                    final single = math.tan(position.dy / position.dx);
-                    var angle = math.atan2(position.dy, position.dx);
-                    var degrees = angle * (180 / math.pi) + 90;
-                    print('角度${degrees}');
-                    RobotManager().setRobotAngle(degrees.toInt());
+                    firstPosition = Offset(0, 0);
+                    index = 0;
                     // 结束拖拽
                     position = Offset(0, 0);
                     isMove = false;

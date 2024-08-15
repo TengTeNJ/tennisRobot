@@ -77,13 +77,15 @@ class RobotManager {
   /*设置机器人模式*/
   setRobotMode(RobotMode mode) {
     List<int> data = changeRobotMode(mode);
-    _utpUtil?.sendData(data.toString());
+    // _utpUtil?.sendData(data.toString());
+    _utpUtil?.sendListData(data);
   }
 
   /*设置机器人区域*/
   setRobotArea(int area) {
     List<int> data = setAreaData(area);
-    _utpUtil?.sendData(data.toString());
+    // _utpUtil?.sendData(data.toString());
+    _utpUtil?.sendListData(data);
   }
 
   /*设置机器人速度*/
@@ -101,13 +103,14 @@ class RobotManager {
   /*设置机器人移动角度*/
   setRobotAngle(int angle) {
     List<int> data = setAngleData(angle);
-    _utpUtil?.sendData(data.toString());
+    _utpUtil?.sendListData(data);
   }
 
   /*主动请求某个数据*/
   manualFetch(ManualFetchType type) {
     List<int> data = manualFetchData(type);
-    _utpUtil?.sendData(data.toString());
+    //_utpUtil?.sendData(data.toString());
+    //_utpUtil?.sendListData(data);
   }
 }
 
@@ -284,6 +287,7 @@ handleData(List<int> element) {
       String count2String = decimalToBinary8(count_data2);
       String valueString = count1String + count2String;
       int balls_count = binaryStringToDecimal(valueString);
+      print('球的數量${balls_count}');
       // 每个球占4个字节
       if (element.length < (4 + 4 * balls_count)) {
         print('看到的所有球的数据不合法');

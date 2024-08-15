@@ -3,18 +3,20 @@ import 'package:tennis_robot/constant/constants.dart';
 
 /// 模式切换view
 class ModeSwitchView extends StatefulWidget {
-  const ModeSwitchView({super.key});
+  Function? areaClick;
+
+  ModeSwitchView({this.areaClick});
 
   @override
   State<ModeSwitchView> createState() => _ModeSwitchViewState();
 }
 
 class _ModeSwitchViewState extends State<ModeSwitchView> {
-   int _currentIndex = 0;
+  int _currentIndex = 0;
 
   void _actionClick(int index) {
     setState(() {
-        _currentIndex = index;
+      _currentIndex = index;
     });
   }
   @override
@@ -28,45 +30,50 @@ class _ModeSwitchViewState extends State<ModeSwitchView> {
               borderRadius: BorderRadius.circular(4),
               color: Constants.selectModelBgColor,
             ),
-             height: 40, width: 178,
-            ),
+            height: 40, width: 178,
+          ),
           Positioned(
             left: 5,
             top: 5,
             child: GestureDetector(onTap: () {
-                _actionClick(0);
+              if (widget.areaClick != null) {
+                widget.areaClick!(0);
+              }
+              _actionClick(0);
             },  child: Container(
                 decoration: BoxDecoration(
-         color: _currentIndex == 0 ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor,
-         borderRadius: BorderRadius.circular(4),
-                    ),
-         height: 30,
-         width: 77,
-       child: Container(
-         alignment: Alignment.center,
-         child:Constants.mediumWhiteTextWidget('Area A', 15, _currentIndex == 0? Colors.white : Constants.grayTextColor),
-       )
-     ), ),
+                  color: _currentIndex == 0 ? Constants.selectedModelOrangeBgColor : Constants.selectModelBgColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                height: 30,
+                width: 77,
+                child: Container(
+                  alignment: Alignment.center,
+                  child:Constants.mediumWhiteTextWidget('Area A', 15, _currentIndex == 0? Colors.white : Constants.grayTextColor),
+                )
+            ), ),
           ),
           Positioned(
-            top: 5,
-            right: 5,
+              top: 5,
+              right: 5,
               child: GestureDetector(onTap: () {
-                print(44442333);
+                if (widget.areaClick != null) {
+                  widget.areaClick!(1);
+                }
                 _actionClick(1);
 
               }, child: Container(
-              decoration: BoxDecoration(
-                color: _currentIndex == 0 ? Constants.selectModelBgColor : Constants.selectedModelOrangeBgColor,
-                borderRadius: BorderRadius.circular(4),
-              ),              height: 30, width: 77,
+                decoration: BoxDecoration(
+                  color: _currentIndex == 0 ? Constants.selectModelBgColor : Constants.selectedModelOrangeBgColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),              height: 30, width: 77,
 
-              child: Container(
+                child: Container(
                   alignment: Alignment.center,
                   child:Constants.mediumWhiteTextWidget('Area B', 15,_currentIndex == 0 ? Constants.grayTextColor : Colors.white),
-              ),
-            ),)
-            ),
+                ),
+              ),)
+          ),
         ],
       ),
     );

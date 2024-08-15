@@ -1,5 +1,7 @@
 import 'package:tennis_robot/constant/constants.dart';
 import '../models/robot_data_model.dart';
+import 'package:tennis_robot/utils/string_util.dart';
+
 
 enum ManualFetchType {
   device, // 设备信息
@@ -62,13 +64,16 @@ List<int> setAreaData(int area) {
 /*设置角度*/
 List<int> setAngleData(int angle) {
   int start = kDataFrameHeader;
-  int length = 6;
+  int length = 7;
   int cmd = 0x45;
-  int data = angle;
-  int cs = start + length + cmd + data;
+  String dataString = angle.toRadixString(2).padLeft(16, '0');
+  int data1 = binaryStringToDecimal(dataString.substring(0, 8));
+  int data2 = binaryStringToDecimal(dataString.substring(8, 16));
+  //int data = angle;
+  int cs = start + length + cmd + data1 + data2;
   int end = kDataFrameFoot;
-  print('设置角度:${[start, length, cmd, data, cs, end]}');
-  return [start, length, cmd, data, cs, end];
+  print('设置角度:${[start, length, cmd, data1, data2, cs, end]}');
+  return [start, length, cmd, data1, data2, cs, end];
 }
 
 List<int> manualFetchData(ManualFetchType type){

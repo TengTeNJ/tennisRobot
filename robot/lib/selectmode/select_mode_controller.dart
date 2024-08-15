@@ -76,31 +76,30 @@ class _SelectModeControllerState extends State<SelectModeController> {
                       RobotManager().setRobotMode(RobotMode.training);
                     },
                       child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: _restBGColor),
-                      width: (Constants.screenWidth(context) - 48) / 2,
-                      height: 221,
-                      child: Column(
-                         mainAxisAlignment: MainAxisAlignment.start,
-                         crossAxisAlignment: CrossAxisAlignment.start,
-                         children: [
-                           Padding(padding: EdgeInsets.only(top: 53, left: 36),
-                             child: Image(
-                               width: 90,
-                               height: 110,
-                               image: AssetImage(_restPicName),
-                             ),
-                           ),
-                           Padding(padding: EdgeInsets.only(top: 22 ,left: 53),
-                             child: Constants.mediumWhiteTextWidget('Resting', 16 ,_restTextColor),
-                           ),
-                         ],
-                      ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: _restBGColor),
+                        width: (Constants.screenWidth(context) - 48) / 2,
+                        height: 221,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(padding: EdgeInsets.only(top: 53, left: 36),
+                              child: Image(
+                                width: 90,
+                                height: 110,
+                                image: AssetImage(_restPicName),
+                              ),
+                            ),
+                            Padding(padding: EdgeInsets.only(top: 22 ,left: 53),
+                              child: Constants.mediumWhiteTextWidget('Resting', 16 ,_restTextColor),
+                            ),
+                          ],
+                        ),
                       ),),
                     SizedBox(width: 8),
                     GestureDetector(onTap: (){
-                      print(456);
                       _changeModeTrain();
                       // 选择模式
                       RobotManager().setRobotMode(RobotMode.rest);
@@ -138,7 +137,7 @@ class _SelectModeControllerState extends State<SelectModeController> {
               ),
               GestureDetector(
                 onTap: (){
-                     NavigatorUtil.push(Routes.selectArea);//
+                  NavigatorUtil.push(Routes.selectArea);//
                 } ,
                 child: Container(
                   child: Center(

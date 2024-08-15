@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/utils/event_bus.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+
 class ResponseCMDType {
   static const int none = 0x00; // 默认无
   static const int deviceInfo = 0x20; // 设备信息，包含开机状态、电量等
@@ -18,15 +20,26 @@ class TcpUtil {
   Socket? socket;
 
   //  初始化 并进行创建
-  TcpUtil.begainTCPSocket(){
+  TcpUtil.begainTCPSocket() {
       this._createTCPClient(Constants.kTcpIPAdress, Constants.kTcpPort);
   }
 
   /*创建TCP连接*/
   Future<Socket?> _createTCPClient(String host, int port) async {
+    final info = NetworkInfo();
+    final wifiIP = await info.getWifiIP();
+    final wifiName = await info.getWifiName();
+    print(' ip===${wifiIP}');
+    print(' wifi name === ${wifiName}');
     try {
-      final Socket socket = await Socket.connect(host, port);
+      final Socket socket = await Socket.connect('192.168.10.48', port);
+
+      // final Socket socket = await Socket.connect((wifiIP != null && wifiIP.length > 0) ? wifiIP : host, port);
       // 赋值
+      //socket.address
+      print('address${socket.address.address}');
+      print('host${socket.address.host}');
+
       this.socket = socket;
       // 开始接收数据
       this.receiveData();
@@ -40,7 +53,17 @@ class TcpUtil {
   /*发送数据*/
   Future<void> sendData(String data) async {
     if (this.socket != null) {
+      print('data角度---${data}');
       this.socket!.write(data);
+    }
+  }
+
+  /*发送数据*/
+  Future<void> sendListData(List<int> data) async {
+    if (this.socket != null) {
+      this.socket!.add(data);
+      this.socket!.flush();
+      //this.socket!.write(data);
     }
   }
 
