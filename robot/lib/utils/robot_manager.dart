@@ -189,6 +189,10 @@ parseData(List<int> data) {
 handleData(List<int> element) {
   int cmd = element[1];
   switch (cmd) {
+    case ResponseCMDType.finishOneFlag:
+      RobotManager()._triggerCallback(type: TCPDataType.finishOneFlag);
+
+
     case ResponseCMDType.deviceInfo:
       int switch_data = element[2]; // 开关机
       int power_data = element[3]; // 电量
