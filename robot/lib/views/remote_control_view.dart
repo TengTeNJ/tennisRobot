@@ -41,10 +41,9 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                   setState(() {
                     // 开始拖拽
                     isMove = true;
-
                     var angle = math.atan2(position.dy, position.dx);
                     var degrees = angle * (180 / math.pi) + 90;
-                    print('开始拖动时轮盘的角度${degrees}');
+
                   });
                 },
                 onPanUpdate: (details) {
@@ -53,30 +52,46 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                     position += details.delta;
                     // 限制圆点在试图A内部移动
                     position = _clampOffsetToCircle(position, ((Constants.screenWidth(context) - 40) / 2.0));
+                    print('位置信息为${position}');
+                    // var angle = math.atan2(position.dy, position.dx);
+                    // var degrees = angle * (180 / math.pi) + 90;
+                    // print('拖动时轮盘的角度${degrees}');
+
+                    index += 1;
+                    if (index == 3) {
+                      firstPosition = Offset(0, position.dy);
+                      print('开始拖动y的偏移量${position.dy}');
+                    }
+
+                    var yOffset = position.dy;
+                    if (firstPosition.dy > 0 &&yOffset < 0) {
+                      yOffset = math.max(position.dy.abs(), position.dy);
+                      position = Offset(position.dx, yOffset);
+                      print('下半圆');
+                    }
+
+                    if (firstPosition.dy <0 && yOffset > 0) {
+                      yOffset = math.min(position.dy.abs(), position.dy);
+                      position = Offset(position.dx, -yOffset);
+                      print('上半圆');
+                    }
 
                     var angle = math.atan2(position.dy, position.dx);
                     var degrees = angle * (180 / math.pi) + 90;
-                    print('拖动时轮盘的角度${degrees}');
-
-                    index += 1;
-                    if (index == 2) {
-                      print('111${degrees}');
-                      RobotManager().setRobotAngle(degrees.toInt());
-                      firstPosition = position;
-                    } else {
-                      var angle = math.atan2(firstPosition.dy, firstPosition.dx);
-                      var degrees = angle * (180 / math.pi) + 90;
-                      print('222${degrees}');
-                      RobotManager().setRobotAngle(degrees.toInt());
+                    if (degrees < 0) {
+                      degrees = degrees + 360;
                     }
+                    print('角度666${degrees.toInt()}');
+                    RobotManager().setRobotAngle(degrees.toInt());
+
                   });
                 },
                 onPanEnd: (details) {
                   // 手指松开时，将圆点移动回试图A的中心
                   setState(() {
-                    firstPosition = Offset(0, 0);
                     index = 0;
                     // 结束拖拽
+                    firstPosition = Offset(0, 0);
                     position = Offset(0, 0);
                     isMove = false;
                   });
