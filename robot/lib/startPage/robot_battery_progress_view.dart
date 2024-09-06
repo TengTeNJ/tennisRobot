@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 
+import '../utils/robot_manager.dart';
+
 class RobotBatteryProgressView extends StatefulWidget {
   const RobotBatteryProgressView({super.key});
 
@@ -9,6 +11,23 @@ class RobotBatteryProgressView extends StatefulWidget {
 }
 
 class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
+  int battery = 100;
+
+  void initState() {
+    super.initState();
+   // setState(() {
+      battery = 85;
+    // });
+    //机器人电量变化
+    RobotManager().dataChange = (TCPDataType type) {
+      int power = RobotManager().dataModel.powerValue;
+      setState(() {
+        power = 66;
+        battery = power;
+      });
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +53,7 @@ class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
                               borderRadius: BorderRadius.circular(15),
                               color: Constants.selectedModelBgColor,
                             ),
-                            width: 180,
+                            width: 240 * battery /100,
                             height: 30,
                      ),
                      Container(
@@ -52,7 +71,7 @@ class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
                                margin: EdgeInsets.only(left: 8),
                                child: Row(
                                   children: [
-                                    Constants.mediumWhiteTextWidget('70', 24, Colors.white),
+                                    Constants.mediumWhiteTextWidget('${battery}', 24, Colors.white),
                                     Constants.mediumWhiteTextWidget('%', 16, Colors.white)
                                   ],
                                ),
