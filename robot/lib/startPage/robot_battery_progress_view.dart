@@ -11,19 +11,17 @@ class RobotBatteryProgressView extends StatefulWidget {
 }
 
 class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
-  int battery = 100;
-
+  int battery = 70;
+  int remindTime = 100; //机器人剩余工作时间
   void initState() {
     super.initState();
-   // setState(() {
-      battery = 85;
-    // });
     //机器人电量变化
     RobotManager().dataChange = (TCPDataType type) {
       int power = RobotManager().dataModel.powerValue;
       setState(() {
-        power = 66;
         battery = power;
+        // 机器人满电可以工作120min
+        remindTime = (battery / 100.0 * 120).toInt() ;
       });
     };
   }
@@ -63,7 +61,6 @@ class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
                       child: Row(
                         children: [
                           Image.asset('images/connect/battery_icon.png',
-
                             width: 10,
                             height: 15,
                           ),
@@ -75,7 +72,6 @@ class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
                                     Constants.mediumWhiteTextWidget('%', 16, Colors.white)
                                   ],
                                ),
-
                            ),
                         ],
                       ),
@@ -88,7 +84,7 @@ class _RobotBatteryProgressViewState extends State<RobotBatteryProgressView> {
                margin: EdgeInsets.only(top: 6),
                width:188,
                height: 20,
-               child: Constants.mediumWhiteTextWidget('100 mins left', 16, Constants.grayTextColor),
+               child: Constants.mediumWhiteTextWidget('${remindTime} mins left', 16, Constants.grayTextColor),
              ),
            ],
         ),
