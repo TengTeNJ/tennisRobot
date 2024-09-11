@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:tennis_robot/constant/constants.dart';
@@ -14,7 +13,7 @@ class ConnectRobotController extends StatefulWidget {
 }
 
 class _ConnectRobotControllerState extends State<ConnectRobotController> {
-  bool isConnected = true; // 是否连接上WiFi
+  bool isConnected = false; // 是否连接上WiFi
   var currentWifiName = 'Potent Robot';
   @override
   void initState() {
@@ -30,11 +29,16 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
     setState(() {
       if(wifiName != null){
         currentWifiName = wifiName!;
+        if (currentWifiName.contains('potent') ){ // 机器人WiFi的名字包含seek
+            isConnected = true;
+        }
       }
     });
   }
   @override
   Widget build(BuildContext context) {
+    NavigatorUtil.init(context);
+
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
@@ -125,7 +129,7 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                           print('deviceInfo123 ${RobotManager().dataModel.speed}');
                         }
                       };
-                      NavigatorUtil.push(Routes.selectMode);
+                      NavigatorUtil.push(Routes.home);
                     },
                     child: Container(
                       child: Center(
