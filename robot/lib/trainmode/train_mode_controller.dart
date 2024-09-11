@@ -1,8 +1,8 @@
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/customAppBar.dart';
+import 'package:tennis_robot/models/pickup_ball_model.dart';
 import 'package:tennis_robot/models/robot_data_model.dart';
 import 'package:tennis_robot/trainmode/mode_switch_view.dart';
 import 'package:tennis_robot/trainmode/robot_function_switch_view.dart';
@@ -11,12 +11,12 @@ import 'package:tennis_robot/trainmode/robot_route_view.dart';
 import 'package:tennis_robot/trainmode/train_mode_total_view.dart';
 import 'package:tennis_robot/utils/dialog.dart';
 import 'package:tennis_robot/utils/robot_send_data.dart';
+import 'package:tennis_robot/utils/string_util.dart';
 import 'package:tennis_robot/views/button_switch_view.dart';
 import 'package:tennis_robot/views/remote_control_view.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
 import 'package:tennis_robot/utils/robot_manager.dart';
 import 'package:tennis_robot/utils/data_base.dart';
-
 import '../models/ball_model.dart';
 
 /// 训练模式
@@ -30,15 +30,33 @@ class TrainModeController extends StatefulWidget {
 class _TrainModeControllerState extends State<TrainModeController> {
   int mode = 0;
   int powerLevels = 5;
-  int robotLeftMargin = 0;
-  int robotTopMargin = 0;
+  int robotLeftMargin = 50;
+  int robotTopMargin = 164;
   int robotAngle = 0;
   List<BallModel> trueBallList = []; // 视野中看到的真实的球
   int restModeTotalViewTopMargin = -60; // 休息模式下整体 topMargin
+  int pickUpBalls =0; // 捡球的数量
   void modeChange(int index) {
     setState(() {
       mode = index;
     });
+  }
+
+  void getBallData() async {
+    final _list  = await DataBaseHelper().getData(kDataBaseTableName);
+    List<String> timeArray = [];
+    _list.forEach((element){
+       timeArray.add(element.time);
+    });
+    var todayTime = StringUtil.currentTimeString();
+    var model = PickupBallModel(pickupBallNumber: pickUpBalls.toString(), time: todayTime);
+
+    if (timeArray.contains(todayTime)) {
+      print('数据库有当天的捡球数');
+      DataBaseHelper().updateData(kDataBaseTableName, model.toJson(), model.time);
+    } else {
+      DataBaseHelper().insertData(kDataBaseTableName, model);
+    }
   }
 
   @override
@@ -47,9 +65,9 @@ class _TrainModeControllerState extends State<TrainModeController> {
     print('66666${RobotManager().manualFetch(ManualFetchType.device)}');
     // 监听电量
     RobotManager().dataChange = (TCPDataType type) {
-      // setState(() {
+      setState(() {
       int power = RobotManager().dataModel.powerValue;
-      power = 68;
+      print('电量 ${power}');
       if (0<power && power<20) {
         powerLevels = 1;
       } else if (20<power && power < 40){
@@ -61,7 +79,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
       } else {
         powerLevels = 5;
       }
-      // });
+      });
       if (type == TCPDataType.deviceInfo) {
         print('robot battery ${RobotManager().dataModel.powerValue}');
       } else if(type == TCPDataType.speed) {
@@ -73,33 +91,44 @@ class _TrainModeControllerState extends State<TrainModeController> {
         int yPoint = RobotManager().dataModel.yPoint;
         // 机器人角度
         int robotAngle = RobotManager().dataModel.angle;
-
         // 机器人坐标转换
-        xPoint = 10; yPoint = 100;
-          // setState(() {
-          //   robotLeftMargin = xPoint + 44;
-          //   robotTopMargin = yPoint + 68;
-          // });
           setState(() {
-            robotLeftMargin += 4;
-            robotTopMargin += 4;
-            robotAngle += 1;
+            if (robotLeftMargin <= 242) {
+              robotLeftMargin += xPoint;
+              robotTopMargin  += yPoint;
+            }
           });
-
-        print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
+          print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
       } else if(type == TCPDataType.ballsInView) { // 视野中看到的球
         List balls = RobotManager().dataModel.inViewBallList;
-        var ball = BallModel();
-        ball.xPoint = 200;
-        ball.yPoint = 200;
-        trueBallList.add(ball);
+        print('inViewBallList ${balls}');
+
+        trueBallList.clear();
         trueBallList.addAll(balls as Iterable<BallModel>);
         setState(() {
         });
         print('robot ballsInView ${balls}');
       } else if(type == TCPDataType.finishOneFlag) { // 機器人撿球成功上報
         print('robot finishOneFlag');
-        DataBaseHelper().insertData(kDataBaseTableName, '');
+        pickUpBalls += 1;
+        getBallData();// 数据库处理
+      } else if(type == TCPDataType.errorInfo) { // 异常信息
+        var desc = '';
+        var status = RobotManager().dataModel.errorStatu;
+        if (status == 1) {  // 1 收球轮异常故障
+          desc = 'Abnormal malfunction of the ball receiving wheel';
+        } else if(status == 2) { //行走轮异常故障
+          desc = 'Abnormal malfunction of the walking wheel';
+        } else if(status == 3) { //摄像头异常故障
+          desc = 'Camera malfunction';
+        } else if (status == 4) { // 雷达异常故障
+          desc = 'Radar abnormal malfunction';
+        }
+        TTDialog.robotEXceptionDialog(context,desc, () async {
+          NavigatorUtil.pop();
+        });
+      } else if(type == TCPDataType.warnInfo) { // 告警信息
+        print('robot warnInfo');
       }
     };
   }
@@ -136,7 +165,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                       Container(
                         // margin: EdgeInsets.only(left: 6),
                         child: Constants.mediumWhiteTextWidget(
-                            '200', 12, Colors.white),
+                            '${pickUpBalls}', 12, Colors.white),
                       ),
                     ],
                   ),
@@ -174,7 +203,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
               children: [
                 mode == 2
                     ? Container(
-                  margin: EdgeInsets.only(left: 10,right: 10),
+                  margin: EdgeInsets.only(left: 10,right: 10,top: 20),
                   child: RobotRouteView(),
                   // child: RobotMoveView(),
                 )
@@ -205,7 +234,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                           left: 16,
                           right: 16,
                           top: restModeTotalViewTopMargin.toDouble(),
-                          child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: 3,ballList: trueBallList,))
+                          child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: 0,ballList: trueBallList,))
                           : Positioned(
                         child: Container(),
                       ),
@@ -223,15 +252,24 @@ class _TrainModeControllerState extends State<TrainModeController> {
                   if (index == 1) {
                     // 休息模式
                     RobotManager().setRobotMode(RobotMode.rest);
-                    TTDialog.robotEndTaskDialog(context, () async {
-                      NavigatorUtil.pop();
-                    });
                   } else if (index == 2) {
                     // 训练模式
                     RobotManager().setRobotMode(RobotMode.training);
-                    // TTDialog.robotEXceptionDialog(context, () async {
-                    //      //   NavigatorUtil.pop();
-                    //                });
+                    // var desc = '';
+                    // if (status == 1) {  // 1 收球轮异常故障
+                    // desc = 'Abnormal malfunction of the ball receiving wheel';
+                    // } else if(status == 2) { //行走轮异常故障
+                    //   desc = 'Abnormal malfunction of the walking wheel';
+                    // } else if(status == 3) { //摄像头异常故障
+                    //   desc = 'Camera malfunction';
+                    // } else if (status == 4) { // 雷达异常故障
+                    //   desc = 'Radar abnormal malfunction';
+                    // }
+                    //
+                    // TTDialog.robotEXceptionDialog(context,desc, () async {
+                    //   NavigatorUtil.pop();
+                    // });
+
                   } else if (index == 3) {
                     // 遥控模式
                     RobotManager().setRobotMode(RobotMode.remote);

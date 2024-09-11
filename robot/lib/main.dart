@@ -5,8 +5,18 @@ import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/selectmode/select_mode_controller.dart';
 import 'package:tennis_robot/trainmode/robot_move_view.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
+import 'package:shopify_flutter/shopify_flutter.dart';
 
 void main() {
+  ShopifyConfig.setConfig(
+    storefrontAccessToken: 'e49948d9b677f9bf54e9e73bc7922aac',
+    storeUrl:'http://www.baidu.com',
+    adminAccessToken: 'a1d13b7d828641d00a18fbf94c0c95b0',
+    storefrontApiVersion:'2023-07',
+    cachePolicy: CachePolicy.noCache,
+    language: 'en',
+  );
+
   runApp(const MyApp());
 }
 
@@ -20,7 +30,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       onGenerateRoute: Routes.onGenerateRoute,
-      home: RootPageController(),
+      home: ConnectRobotController(),
       // home: RobotMoveView(),
     );
   }

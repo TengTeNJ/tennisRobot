@@ -8,7 +8,7 @@ import 'package:tennis_robot/selectmode/select_mode_controller.dart';
 import 'package:tennis_robot/trainmode/train_mode_controller.dart';
 
 class Routes {
-  static const String home = '/'; // 主页
+  static const String home = 'home'; // 主页
   static const String selectMode = 'selectMode'; // 选择模式界面
   static const String connect = 'connect'; // 链接机器人界面
   static const String selectArea = 'selectArea'; // 选择区域界面

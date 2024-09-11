@@ -7,8 +7,10 @@ import '../utils/color.dart';
 class MyStatsBarChatView extends StatefulWidget {
   List<MyStatsModel> datas = [];
   double maxLeft;
+  int maxCount;
 
-  MyStatsBarChatView({required this.datas, this.maxLeft = 0});
+
+  MyStatsBarChatView({required this.datas, this.maxLeft = 0 ,this.maxCount = 0});
 
   @override
   State<MyStatsBarChatView> createState() => _MyStatsBarChatViewState();
@@ -90,9 +92,9 @@ class _MyStatsBarChatViewState extends State<MyStatsBarChatView> {
                   fontFamily: 'SanFranciscoDisplay',
                   fontWeight: FontWeight.w400,
                 ),
-                maximum: 50,
+                maximum: widget.maxCount.toDouble(),
                 labelAlignment: LabelAlignment.center,
-                interval: 10,
+                interval: widget.maxCount.toDouble() / 3.0,
                 axisLine: AxisLine(width: 1, color: Colors.transparent),
                 // 设置 X 轴轴线颜色和宽度
                 plotOffset: 0,
@@ -147,7 +149,7 @@ class _MyStatsBarChatViewState extends State<MyStatsBarChatView> {
                     xValueMapper: (MyStatsModel data, _) =>
                         int.parse(data.indexString),
                     yValueMapper: (MyStatsModel data, _) =>
-                        data.speed > 50 ? 50 : data.speed,
+                        data.speed > 50 ? data.speed : data.speed,
                     pointColorMapper: (MyStatsModel data, _) =>
                         hexStringToColor('#F8850B'))
               ]),
@@ -155,7 +157,7 @@ class _MyStatsBarChatViewState extends State<MyStatsBarChatView> {
         Padding(
             padding:
                 EdgeInsets.only(left: widget.maxLeft + 6, right: widget.maxLeft ),
-            child: Constants.mediumBaseTextWidget('Highest 600', 14)),
+            child: Constants.mediumBaseTextWidget('Highest ${widget.maxCount}', 14)),
       ],
     );
   }

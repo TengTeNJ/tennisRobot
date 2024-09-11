@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:tennis_robot/constant/constants.dart';
+import 'package:tennis_robot/utils/data_base.dart';
 import 'package:tennis_robot/utils/event_bus.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
@@ -18,7 +19,8 @@ class ResponseCMDType {
 }
 class TcpUtil {
   Socket? socket;
-
+  DateTime connectStartTime = DateTime.now(); // 连接开始时间
+  DateTime endTime = DateTime.now(); // 连接结束时间
   //  初始化 并进行创建
   TcpUtil.begainTCPSocket() {
       this._createTCPClient(Constants.kTcpIPAdress, Constants.kTcpPort);
@@ -32,14 +34,16 @@ class TcpUtil {
     print(' ip===${wifiIP}');
     print(' wifi name === ${wifiName}');
     try {
-      final Socket socket = await Socket.connect('192.168.10.48', port);
+      // 192.168.10.48 杨工
+      // Albert  192.168.2.114
+     final Socket socket = await Socket.connect('192.168.2.114', port);
 
       // final Socket socket = await Socket.connect((wifiIP != null && wifiIP.length > 0) ? wifiIP : host, port);
       // 赋值
       //socket.address
       print('address${socket.address.address}');
       print('host${socket.address.host}');
-
+      connectStartTime = DateTime.now();
       this.socket = socket;
       // 开始接收数据
       this.receiveData();
@@ -79,7 +83,13 @@ class TcpUtil {
           'key':kTCPDataListen,
           'value':data
         });
-      }, onDone: () {
+      }, onDone: () async {
+        endTime = DateTime.now();
+        Duration duration = endTime.difference(connectStartTime);
+        print('时间差（秒）: ${duration.inSeconds}');
+        final saveTime = await DataBaseHelper().fetchData();
+        var totalTime = saveTime + duration.inSeconds;
+        DataBaseHelper().saveData(totalTime);
         print('TCP Connection is closed.');
       }, onError: (error) {
         print('TCP Error: $error');

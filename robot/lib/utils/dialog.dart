@@ -27,7 +27,7 @@ class TTDialog {
     );
   }
 
-  static robotEXceptionDialog(BuildContext context,Function exchange) {
+  static robotEXceptionDialog(BuildContext context,String title,Function exchange) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -40,7 +40,7 @@ class TTDialog {
                 color: Constants.dialogBgColor,
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child:RobotExceptionDialog(exchange: exchange),
+              child:RobotExceptionDialog(exchange: exchange,title: title),
             ),
           );
         }
@@ -160,8 +160,9 @@ class RobotModelAlertDialog extends StatelessWidget {
 /*机器人异常弹窗*/
 class RobotExceptionDialog extends StatelessWidget {
   Function exchange;
+  String title;
 
-  RobotExceptionDialog({required this.exchange});
+  RobotExceptionDialog({required this.exchange,required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +193,7 @@ class RobotExceptionDialog extends StatelessWidget {
             height: 20,
           ),
 
-          Constants.regularWhiteTextWidget('Toggle controller mode?', 14,Constants.connectTextColor),
+          Constants.regularWhiteTextWidget('${this.title}', 14,Constants.connectTextColor),
 
           SizedBox(
             height: 84,
