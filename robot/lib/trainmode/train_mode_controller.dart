@@ -95,8 +95,6 @@ class _TrainModeControllerState extends State<TrainModeController> {
         // 机器人Y坐标
         int yPoint = RobotManager().dataModel.yPoint;
         TTToast.showToast('X:${xPoint}  Y:${yPoint} R:${robotAngle}');
-        xPoint = -29;
-        yPoint = 156;
         // 机器人坐标转换
           setState(() {
               robotLeftMargin = (xPoint / 100).toInt() + 50;
