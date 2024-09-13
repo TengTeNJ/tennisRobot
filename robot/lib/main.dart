@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:tennis_robot/connect/connect_robot_controller.dart';
 import 'package:tennis_robot/root_page.dart';
 import 'package:tennis_robot/route/routes.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: Routes.onGenerateRoute,
       home: ConnectRobotController(),
       // home: RobotMoveView(),
+      builder: EasyLoading.init(),
     );
   }
 }

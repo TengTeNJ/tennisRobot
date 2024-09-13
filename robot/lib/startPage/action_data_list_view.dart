@@ -52,6 +52,9 @@ class _ActionDataListViewState extends State<ActionDataListView> {
   // 组装图标数据
   Future<void> chartData() async {
     final _list = await DataBaseHelper().getData(kDataBaseTableName);
+    if (_list.length == 0) {
+       return;
+    }
     for (int i = 0 ; i < _list.length ; i++) {
       MyStatsModel model = MyStatsModel();
       model.speed = int.parse(_list[i].pickupBallNumber);
@@ -116,7 +119,7 @@ class _ActionDataListViewState extends State<ActionDataListView> {
               assetPath: 'images/connect/totol_number_icon.png',
               title: 'Total',
               desc: totalCount.toString(),
-              showNext: true,
+              showNext: totalCount == 0 ? false : true,
               onTap: (){
                 showBarView = true;
                 setState(() {

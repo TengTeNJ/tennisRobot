@@ -42,7 +42,7 @@ class _HomePageControllerState extends State<HomePageController> {
                   width: Constants.screenWidth(context),
                   // alignment: Alignment.topLeft,
                   margin: EdgeInsets.only(top: 17,left:38 ,right: 30),
-                  child: Constants.mediumWhiteTextWidget('Product Introduction Product Introduction Product Introduction', 16,Color.fromRGBO(255, 255, 255, 0.8),maxLines: 2 ,textAlign: TextAlign.left ,height: 1.5),
+                  child: Constants.mediumWhiteTextWidget('Product Introduction Product Introduction Product Introduction Product Introduction', 16,Color.fromRGBO(255, 255, 255, 0.8),maxLines: 2 ,textAlign: TextAlign.left ,height: 1.5),
                 ),
 
                 // Container(

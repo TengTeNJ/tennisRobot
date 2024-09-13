@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/customAppBar.dart';
 import 'package:tennis_robot/models/pickup_ball_model.dart';
@@ -12,6 +13,7 @@ import 'package:tennis_robot/trainmode/train_mode_total_view.dart';
 import 'package:tennis_robot/utils/dialog.dart';
 import 'package:tennis_robot/utils/robot_send_data.dart';
 import 'package:tennis_robot/utils/string_util.dart';
+import 'package:tennis_robot/utils/toast.dart';
 import 'package:tennis_robot/views/button_switch_view.dart';
 import 'package:tennis_robot/views/remote_control_view.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
@@ -65,6 +67,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
     print('66666${RobotManager().manualFetch(ManualFetchType.device)}');
     // 监听电量
     RobotManager().dataChange = (TCPDataType type) {
+
       setState(() {
       int power = RobotManager().dataModel.powerValue;
       print('电量 ${power}');
@@ -85,18 +88,19 @@ class _TrainModeControllerState extends State<TrainModeController> {
       } else if(type == TCPDataType.speed) {
         print('robot speed ${RobotManager().dataModel.speed}');
       } else if(type == TCPDataType.coordinate) { // 机器人坐标
+        // 机器人角度
+        int robotAngle = RobotManager().dataModel.angle;
         // 机器人X坐标
         int xPoint = RobotManager().dataModel.xPoint;
         // 机器人Y坐标
         int yPoint = RobotManager().dataModel.yPoint;
-        // 机器人角度
-        int robotAngle = RobotManager().dataModel.angle;
+        TTToast.showToast('X:${xPoint}  Y:${yPoint} R:${robotAngle}');
+        xPoint = -29;
+        yPoint = 156;
         // 机器人坐标转换
           setState(() {
-            if (robotLeftMargin <= 242) {
-              robotLeftMargin += xPoint;
-              robotTopMargin  += yPoint;
-            }
+              robotLeftMargin = (xPoint / 100).toInt() + 50;
+              robotTopMargin  = (yPoint /100).toInt() + 164;
           });
           print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
       } else if(type == TCPDataType.ballsInView) { // 视野中看到的球
@@ -250,26 +254,13 @@ class _TrainModeControllerState extends State<TrainModeController> {
                   print('mode=====${index}');
                   modeChange(index);
                   if (index == 1) {
+                    print('屏幕宽${Constants.screenWidth(context)}');
+                    print('屏幕高${Constants.screenHeight(context)}');
                     // 休息模式
                     RobotManager().setRobotMode(RobotMode.rest);
                   } else if (index == 2) {
                     // 训练模式
                     RobotManager().setRobotMode(RobotMode.training);
-                    // var desc = '';
-                    // if (status == 1) {  // 1 收球轮异常故障
-                    // desc = 'Abnormal malfunction of the ball receiving wheel';
-                    // } else if(status == 2) { //行走轮异常故障
-                    //   desc = 'Abnormal malfunction of the walking wheel';
-                    // } else if(status == 3) { //摄像头异常故障
-                    //   desc = 'Camera malfunction';
-                    // } else if (status == 4) { // 雷达异常故障
-                    //   desc = 'Radar abnormal malfunction';
-                    // }
-                    //
-                    // TTDialog.robotEXceptionDialog(context,desc, () async {
-                    //   NavigatorUtil.pop();
-                    // });
-
                   } else if (index == 3) {
                     // 遥控模式
                     RobotManager().setRobotMode(RobotMode.remote);

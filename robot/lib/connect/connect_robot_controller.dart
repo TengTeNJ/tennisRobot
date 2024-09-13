@@ -144,7 +144,7 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
                 ],
               ),
             ),
