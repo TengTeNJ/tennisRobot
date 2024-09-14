@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:tennis_robot/constant/constants.dart';
@@ -9,7 +11,7 @@ import '../models/ball_model.dart';
 class TrainModeTotalView extends StatefulWidget {
   int leftMargin;
   int topMargin;
-  int robotAngle;
+  double robotAngle;
   List<BallModel> ballList;
 
   TrainModeTotalView({required this.leftMargin,required this.topMargin, required this.robotAngle, required this.ballList});
@@ -19,7 +21,7 @@ class TrainModeTotalView extends StatefulWidget {
 }
 
 class _TrainModeTotalViewState extends State<TrainModeTotalView> {
-  double _turns = 0.0;
+  double _turns = 0.02;
   // double _leftMargin = 10;
   // double _topMargin = 181;
 
@@ -53,28 +55,17 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+
+
         for(int i = 0; i < 10 ; i ++)
           getRandomTenniss,
           rectBorderWidget,
 
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.transparent,
-              shadowColor: Colors.transparent),
-          child: const Text("right"),
-          onPressed: () {
-            setState(() {
-              _turns += 0.02;
-              print('点击旋转机器人');
-            });
-          },
-        ),
         Positioned(
             left: widget.leftMargin.toDouble(),
             top: widget.topMargin.toDouble(),
             child: RobotRotateView(
-              turns: -_turns,
+              turns: widget.robotAngle.toDouble(),
               duration: 1000,
               child: RobotCameraRotateView(),
             )
@@ -90,6 +81,20 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
                 child: Image(image: AssetImage('images/resetmode/tennis_many_icon.png'),),
               )
           ),
+
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+              foregroundColor: Colors.transparent,
+              shadowColor: Colors.transparent),
+          child: const Text("right"),
+          onPressed: () {
+            setState(() {
+              _turns += 0.02;
+              print('点击旋转机器人');
+            });
+          },
+        ),
       ],
     );
   }

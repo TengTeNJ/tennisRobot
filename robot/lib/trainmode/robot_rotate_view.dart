@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class RobotRotateView extends StatefulWidget {
    RobotRotateView({required this.turns,required this.duration,required this.child});
 
-   double turns;
+   double turns; // 1.0代表360度
    int duration;
    Widget child;
 
@@ -19,7 +19,7 @@ class _RobotRotateViewState extends State<RobotRotateView> with SingleTickerProv
     super.initState();
     _controller = AnimationController(
         vsync: this ,
-        lowerBound: - double.infinity,
+        lowerBound: -double.infinity,
         upperBound: double.infinity
     );
     _controller.value = widget.turns;
@@ -42,6 +42,5 @@ class _RobotRotateViewState extends State<RobotRotateView> with SingleTickerProv
         curve: Curves.easeInOut,
       );
     }
-    
   }
 }

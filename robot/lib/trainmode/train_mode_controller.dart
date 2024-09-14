@@ -1,3 +1,5 @@
+
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -34,7 +36,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
   int powerLevels = 5;
   int robotLeftMargin = 50;
   int robotTopMargin = 164;
-  int robotAngle = 0;
+  double robotAngles = 0.0; //
   List<BallModel> trueBallList = []; // 视野中看到的真实的球
   int restModeTotalViewTopMargin = -60; // 休息模式下整体 topMargin
   int pickUpBalls =0; // 捡球的数量
@@ -100,6 +102,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
               robotLeftMargin = (xPoint / 100).toInt() + 50;
               robotTopMargin  = (yPoint /100).toInt() + 164;
           });
+           robotAngles = robotAngle / 360.0; // 角度调试
           print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
       } else if(type == TCPDataType.ballsInView) { // 视野中看到的球
         List balls = RobotManager().dataModel.inViewBallList;
@@ -236,7 +239,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                           left: 16,
                           right: 16,
                           top: restModeTotalViewTopMargin.toDouble(),
-                          child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: 0,ballList: trueBallList,))
+                          child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: robotAngles,ballList: trueBallList,))
                           : Positioned(
                         child: Container(),
                       ),
@@ -253,7 +256,6 @@ class _TrainModeControllerState extends State<TrainModeController> {
                   modeChange(index);
                   if (index == 1) {
                     print('屏幕宽${Constants.screenWidth(context)}');
-                    print('屏幕高${Constants.screenHeight(context)}');
                     // 休息模式
                     RobotManager().setRobotMode(RobotMode.rest);
                   } else if (index == 2) {
