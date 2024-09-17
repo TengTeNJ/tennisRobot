@@ -30,6 +30,8 @@ class _RobotRotateViewState extends State<RobotRotateView> with SingleTickerProv
      return RotationTransition(
          turns: _controller,
          child: widget.child,
+         // alignment: Alignment.centerLeft,
+         alignment: Alignment(-0.8,0),
      );
   }
   
