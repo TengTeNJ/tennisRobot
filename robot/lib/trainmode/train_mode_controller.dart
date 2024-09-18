@@ -34,7 +34,7 @@ class TrainModeController extends StatefulWidget {
 class _TrainModeControllerState extends State<TrainModeController> {
   int mode = 0;
   int powerLevels = 5;
-  int robotLeftMargin = 50;
+  int robotLeftMargin = 35;
   int robotTopMargin = 164;
   double robotAngles = 0.0; //
   List<BallModel> trueBallList = []; // 视野中看到的真实的球
@@ -63,27 +63,24 @@ class _TrainModeControllerState extends State<TrainModeController> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    print('66666${RobotManager().manualFetch(ManualFetchType.device)}');
+  void listenData() {
     // 监听电量
     RobotManager().dataChange = (TCPDataType type) {
 
       setState(() {
-      int power = RobotManager().dataModel.powerValue;
-      print('电量 ${power}');
-      if (0<power && power<20) {
-        powerLevels = 1;
-      } else if (20<power && power < 40){
-        powerLevels = 2;
-      } else if (40<power &&power <60) {
-        powerLevels = 3;
-      } else if (60<power &&power <80) {
-        powerLevels = 4;
-      } else {
-        powerLevels = 5;
-      }
+        int power = RobotManager().dataModel.powerValue;
+        print('电量 ${power}');
+        if (0<power && power<20) {
+          powerLevels = 1;
+        } else if (20<power && power < 40){
+          powerLevels = 2;
+        } else if (40<power &&power <60) {
+          powerLevels = 3;
+        } else if (60<power &&power <80) {
+          powerLevels = 4;
+        } else {
+          powerLevels = 5;
+        }
       });
       if (type == TCPDataType.deviceInfo) {
         print('robot battery ${RobotManager().dataModel.powerValue}');
@@ -96,14 +93,41 @@ class _TrainModeControllerState extends State<TrainModeController> {
         int xPoint = RobotManager().dataModel.xPoint;
         // 机器人Y坐标
         int yPoint = RobotManager().dataModel.yPoint;
+        xPoint = 200;
+        yPoint = 0;
+        robotAngle = 0;
         TTToast.showToast('X:${xPoint}  Y:${yPoint} R:${robotAngle}');
+
+        // 虚拟网球场高度
+        var virualHeight =  (Constants.screenWidth(context) - 58 * 2) *
+            (813 / 522) /
+            2 +
+            180;
+        var virualWidth = 522 * virualHeight / 813;
+
+        var screenHeight = Constants.screenHeight(context);
+        print('11111${virualHeight}');
+        print('22222${screenHeight}');
+
+        // 真实球场宽 10.97   高23.77
         // 机器人坐标转换
-          setState(() {
-              robotLeftMargin = (xPoint / 100).toInt() + 50;
-              robotTopMargin  = (yPoint /100).toInt() + 164;
-          });
-           robotAngles = robotAngle / 360.0; // 角度调试
-          print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
+        setState(() {
+          // robotLeftMargin = (xPoint / 100).toInt() + 50;
+          // robotTopMargin  = (yPoint /100).toInt() + 164;
+          // robotAngles += 0.1;
+          robotLeftMargin = (xPoint / 100 / 10.97 * virualWidth).toInt() + 30;
+          if (xPoint == 0) {
+            robotLeftMargin = 35;
+          }
+
+          robotTopMargin = (yPoint / 100 / (23.77 / 2) * virualHeight/2 ).toInt() + 164;
+
+          print('robotLeftMargin-=-=${robotLeftMargin}');
+          print('robotTopMargin====${robotTopMargin}');
+
+        });
+        robotAngles = robotAngle / 360.0; // 角度调试
+        print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
       } else if(type == TCPDataType.ballsInView) { // 视野中看到的球
         List balls = RobotManager().dataModel.inViewBallList;
         print('inViewBallList ${balls}');
@@ -136,6 +160,12 @@ class _TrainModeControllerState extends State<TrainModeController> {
         print('robot warnInfo');
       }
     };
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('66666${RobotManager().manualFetch(ManualFetchType.device)}');
   }
 
   @override
@@ -258,6 +288,7 @@ class _TrainModeControllerState extends State<TrainModeController> {
                     print('屏幕宽${Constants.screenWidth(context)}');
                     // 休息模式
                     RobotManager().setRobotMode(RobotMode.rest);
+                    listenData();
                   } else if (index == 2) {
                     // 训练模式
                     RobotManager().setRobotMode(RobotMode.training);
