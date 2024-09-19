@@ -40,8 +40,8 @@ class _RobotRotateViewState extends State<RobotRotateView> with SingleTickerProv
     super.didUpdateWidget(oldWidget);
     if(oldWidget.turns != widget.turns) {
       _controller.animateBack(widget.turns,
-        duration: Duration(milliseconds: widget.duration),
-        curve: Curves.easeInOut,
+        duration: Duration.zero,
+       curve: Curves.easeInOut,
       );
     }
   }

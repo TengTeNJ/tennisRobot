@@ -1,5 +1,8 @@
 
 
+import 'dart:async';
+import 'dart:math';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -23,6 +26,11 @@ import 'package:tennis_robot/utils/robot_manager.dart';
 import 'package:tennis_robot/utils/data_base.dart';
 import '../models/ball_model.dart';
 
+enum SelectedArea {
+  areaA,
+  areaB
+}
+
 /// 训练模式
 class TrainModeController extends StatefulWidget {
   const TrainModeController({super.key});
@@ -32,11 +40,14 @@ class TrainModeController extends StatefulWidget {
 }
 
 class _TrainModeControllerState extends State<TrainModeController> {
+  SelectedArea area = SelectedArea.areaA;
   int mode = 0;
   int powerLevels = 5;
-  int robotLeftMargin = 35;
-  int robotTopMargin = 164;
+  int robotLeftMargin = 25;
+
+  int robotTopMargin = 136;
   double robotAngles = 0.0; //
+
   List<BallModel> trueBallList = []; // 视野中看到的真实的球
   int restModeTotalViewTopMargin = -60; // 休息模式下整体 topMargin
   int pickUpBalls =0; // 捡球的数量
@@ -61,6 +72,20 @@ class _TrainModeControllerState extends State<TrainModeController> {
     } else {
       DataBaseHelper().insertData(kDataBaseTableName, model);
     }
+  }
+
+  int smoothAngleTransition(int currentAngle, int lastAngle) {
+    // const double fullCircle = 360.0;
+    // double angleDiff = (currentAngle - lastAngle +pi) % (2 *pi) - pi;
+    // if (angleDiff > pi) {
+    //   angleDiff -= 2* pi;
+    // } else if (angleDiff < -pi) {
+    //   angleDiff += 2*pi;
+    // }
+    if ((currentAngle - lastAngle).abs() > 180) {
+      return currentAngle - 360;
+    }
+    return currentAngle;
   }
 
   void listenData() {
@@ -93,9 +118,9 @@ class _TrainModeControllerState extends State<TrainModeController> {
         int xPoint = RobotManager().dataModel.xPoint;
         // 机器人Y坐标
         int yPoint = RobotManager().dataModel.yPoint;
-        xPoint = 200;
-        yPoint = 0;
-        robotAngle = 0;
+        xPoint = (1097/2).toInt();
+        yPoint = 640;
+        robotAngle = 130;
         TTToast.showToast('X:${xPoint}  Y:${yPoint} R:${robotAngle}');
 
         // 虚拟网球场高度
@@ -104,29 +129,23 @@ class _TrainModeControllerState extends State<TrainModeController> {
             2 +
             180;
         var virualWidth = 522 * virualHeight / 813;
-
         var screenHeight = Constants.screenHeight(context);
-        print('11111${virualHeight}');
-        print('22222${screenHeight}');
-
         // 真实球场宽 10.97   高23.77
         // 机器人坐标转换
         setState(() {
-          // robotLeftMargin = (xPoint / 100).toInt() + 50;
-          // robotTopMargin  = (yPoint /100).toInt() + 164;
-          // robotAngles += 0.1;
-          robotLeftMargin = (xPoint / 100 / 10.97 * virualWidth).toInt() + 30;
+          robotLeftMargin = (xPoint / 100 / 10.97 * virualWidth).toInt() + 20;
           if (xPoint == 0) {
-            robotLeftMargin = 35;
+            robotLeftMargin = 25;
           }
-
-          robotTopMargin = (yPoint / 100 / (23.77 / 2) * virualHeight/2 ).toInt() + 164;
-
+          robotTopMargin = (yPoint / 100 / (23.77 / 2) * virualHeight/2 ).toInt() + 136;
+          if (area == SelectedArea.areaB){
+            robotTopMargin  = robotTopMargin - 140;
+          }
           print('robotLeftMargin-=-=${robotLeftMargin}');
           print('robotTopMargin====${robotTopMargin}');
 
         });
-        robotAngles = robotAngle / 360.0; // 角度调试
+        robotAngles = -robotAngle / 360.0; // 角度调试
         print('robot coordinate ${xPoint}  ${yPoint} ${robotAngle}');
       } else if(type == TCPDataType.ballsInView) { // 视野中看到的球
         List balls = RobotManager().dataModel.inViewBallList;
@@ -213,10 +232,16 @@ class _TrainModeControllerState extends State<TrainModeController> {
                       if(index == 0) { // A区域
                         setState(() {
                           restModeTotalViewTopMargin = -60;
+                          robotTopMargin = 136;
+                          area = SelectedArea.areaA;
+
                         });
                       } else { //B区域
                         setState(() {
                           restModeTotalViewTopMargin = 80;
+                          robotTopMargin = 14;
+                          area = SelectedArea.areaB;
+
                         });
                       }
                     },),
@@ -288,6 +313,8 @@ class _TrainModeControllerState extends State<TrainModeController> {
                     print('屏幕宽${Constants.screenWidth(context)}');
                     // 休息模式
                     RobotManager().setRobotMode(RobotMode.rest);
+                    var angle = smoothAngleTransition(347, 10);
+                    print('6666-=-==${angle}');
                     listenData();
                   } else if (index == 2) {
                     // 训练模式
