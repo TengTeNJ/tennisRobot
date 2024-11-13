@@ -154,7 +154,6 @@ class _SelectModeControllerState extends State<SelectModeController> {
             ],
           ),
         ),
-
       ),
     );
   }

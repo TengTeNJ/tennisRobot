@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -6,7 +5,6 @@ import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/trainmode/robot_camera_rotate_view.dart';
 import 'package:tennis_robot/trainmode/robot_rotate_view.dart';
 import '../models/ball_model.dart';
-// import 'dart:math' as math;
 /// 休息模式下 机器人軌跡view
 class TrainModeTotalView extends StatefulWidget {
   int leftMargin;
@@ -55,8 +53,6 @@ class _TrainModeTotalViewState extends State<TrainModeTotalView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-
-
         for(int i = 0; i < 10 ; i ++)
           getRandomTenniss,
           rectBorderWidget,
