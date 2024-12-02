@@ -106,6 +106,12 @@ class RobotManager {
     _utpUtil?.sendListData(data);
   }
 
+  /*设置机器人移动到指定位置 */
+  setRobotMove(int x, int y) {
+    List<int> data = moveRobotToDesignPosition(x, y);
+    _utpUtil?.sendListData(data);
+  }
+
   /*主动请求某个数据*/
   manualFetch(ManualFetchType type) {
     List<int> data = manualFetchData(type);

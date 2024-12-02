@@ -76,6 +76,21 @@ List<int> setAngleData(int angle) {
   return [start, length, cmd, data1, data2, cs, end];
 }
 
+List<int> moveRobotToDesignPosition(int x,int y) {
+  int start = kDataFrameHeader;
+  int length = 7;
+  int cmd = 0x46;
+  String xString = x.toRadixString(2).padLeft(16, '0');
+  String yString = y.toRadixString(2).padLeft(16, '0');
+  int data1 = binaryStringToDecimal(xString.substring(8, 16));
+  int data2 = binaryStringToDecimal(yString.substring(8, 16));
+  //int data = angle;
+  int cs = start + length + cmd + data1 + data2;
+  int end = kDataFrameFoot;
+  print('设置机器人指定位置角度:${[start, length, cmd, data1, data2, cs, end]}');
+  return [start, length, cmd, data1, data2, cs, end];
+}
+
 List<int> manualFetchData(ManualFetchType type){
   List<int> _cmds = [
     0x20,
