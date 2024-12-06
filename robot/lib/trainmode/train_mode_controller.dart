@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:intl/intl.dart';
 import 'package:tennis_robot/constant/constants.dart';
 import 'package:tennis_robot/customAppBar.dart';
 import 'package:tennis_robot/models/pickup_ball_model.dart';
@@ -118,9 +119,9 @@ class _TrainModeControllerState extends State<TrainModeController> {
         int xPoint = RobotManager().dataModel.xPoint;
         // 机器人Y坐标
         int yPoint = RobotManager().dataModel.yPoint;
-        xPoint = (1097/2).toInt();
-        yPoint = 640;
-        robotAngle = 130;
+        // xPoint = (1097/2).toInt();
+        // yPoint = 640;
+        // robotAngle = 130;
         TTToast.showToast('X:${xPoint}  Y:${yPoint} R:${robotAngle}');
 
         // 虚拟网球场高度
@@ -191,147 +192,203 @@ class _TrainModeControllerState extends State<TrainModeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Constants.darkControllerColor,
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: Constants.screenWidth(context),
-              height: 40,
-              margin: EdgeInsets.only(top: 56, left: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 20,
-                        height: 20,
-                        child: Image(
-                          image: AssetImage('images/resetmode/tennis_icon.png'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Container(
-                        // margin: EdgeInsets.only(left: 6),
-                        child: Constants.mediumWhiteTextWidget(
-                            '${pickUpBalls}', 12, Colors.white),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: mode == 3
-                        ? ButtonSwitchView(
-                        leftTitle: 'Retrieve', rightTitle: 'Pause')
-                        : ModeSwitchView(areaClick:(index) {
-                      if(index == 0) { // A区域
-                        setState(() {
-                          restModeTotalViewTopMargin = -60;
-                          robotTopMargin = 136;
-                          area = SelectedArea.areaA;
+      body:
+        GestureDetector(onTapDown: (TapDownDetails details) {
+          print('阴影内的点击位置x：${details.globalPosition.dx}');
+          print('阴影内的点击位置y：${details.globalPosition.dy}');
 
-                        });
-                      } else { //B区域
-                        setState(() {
-                          restModeTotalViewTopMargin = 80;
-                          robotTopMargin = 14;
-                          area = SelectedArea.areaB;
+          print('屏幕宽${Constants.screenWidth(context)}');
+          print('屏幕高${Constants.screenHeight(context)}');
+          // 屏幕宽高
+          var screenWidth = Constants.screenWidth(context);
+          var screenHeight = Constants.screenHeight(context);
+          // 屏幕触摸点的位置
+          var moveX = details.globalPosition.dx;
+          var moveY = details.globalPosition.dy;
+          // 虚拟网球场宽高
+          var virualHeight =  (Constants.screenWidth(context) - 58 * 2) *
+              (813 / 522) /
+              2 +
+              180;
+          var virualWidth = 522 * virualHeight / 813;
 
-                        });
-                      }
-                    },),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 16),
-                    width: 32,
-                    height: 16,
-                    child: Image(
-                      image:
-                      AssetImage('images/resetmode/mode_battery_${powerLevels}.png'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Column(
+          // 虚拟球网距屏幕的边的距离
+          var offset = (screenWidth - virualWidth) / 2;
+          //
+          var a = (moveX - offset ) / virualWidth;
+          // 真实球场宽 10.97m   高23.77m
+          var xDistance = a * 10.97 * 10;
+
+          print('虚拟球网宽${virualWidth}');
+          print('虚拟球网高${virualHeight}');
+
+          /* x计算 长的计算 */
+          var b =0.0;
+          // 下半场 x为正
+          if (moveY> screenHeight / 2) {
+            b =  (moveY - screenHeight/ 2) / virualHeight;
+          } else { // 上半场 x为负
+            b = -(screenHeight / 2 - moveY) / virualHeight;
+          }
+          var yDistance = b * 23.77 * 10;
+          print('bbbb${yDistance}');
+          TTToast.showToast('点击屏幕x方向${yDistance.round()}y方向${xDistance.round()}');
+          RobotManager().setRobotMove(yDistance.round(), xDistance.round());
+          },
+         child:Container(
+           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                mode == 2
-                    ? Container(
-                  margin: EdgeInsets.only(left: 10,right: 10,top: 20),
-                  child: RobotRouteView(),
-                  // child: RobotMoveView(),
-                )
-                    : Container(),
-                mode == 3
-                    ? Container(
-                  child: RemoteControlView(),
-                )
-                    : Container(
-                  margin: EdgeInsets.only(top: 12),
-                  child: Stack(
-                    clipBehavior: Clip.none,
+                Container(
+                  width: Constants.screenWidth(context),
+                  height: 40,
+                  margin: EdgeInsets.only(top: 56, left: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        child: Image(
-                          image: AssetImage(
-                              'images/connect/select_area_line.png'),
-                        ),
-                        width: Constants.screenWidth(context),
-                        height:
-                        (Constants.screenWidth(context) - 58 * 2) *
-                            (813 / 522) /
-                            2 +
-                            180,
+                      Row(
+                        children: [
+                          Container(
+                            width: 20,
+                            height: 20,
+                            child: Image(
+                              image: AssetImage('images/resetmode/tennis_icon.png'),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Container(
+                            // margin: EdgeInsets.only(left: 6),
+                            child: Constants.mediumWhiteTextWidget(
+                                '${pickUpBalls}', 12, Colors.white),
+                          ),
+                        ],
                       ),
-                      mode == 1
-                          ? Positioned(
-                          left: 16,
-                          right: 16,
-                          top: restModeTotalViewTopMargin.toDouble(),
-                          child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: robotAngles,ballList: trueBallList,))
-                          : Positioned(
-                        child: Container(),
+                      Container(
+                        alignment: Alignment.center,
+                        child: mode == 3
+                            ? ButtonSwitchView(
+                            leftTitle: 'Retrieve', rightTitle: 'Pause')
+                            : ModeSwitchView(areaClick:(index) {
+                          if(index == 0) { // A区域
+                            setState(() {
+                              restModeTotalViewTopMargin = -60;
+                              robotTopMargin = 136;
+                              area = SelectedArea.areaA;
+
+                            });
+                          } else { //B区域
+                            setState(() {
+                              restModeTotalViewTopMargin = 80;
+                              robotTopMargin = 14;
+                              area = SelectedArea.areaB;
+
+                            });
+                          }
+                        },),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(right: 16),
+                        width: 32,
+                        height: 16,
+                        child: Image(
+                          image:
+                          AssetImage('images/resetmode/mode_battery_${powerLevels}.png'),
+                        ),
                       ),
                     ],
                   ),
                 ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    mode == 2
+                        ? Container(
+                      margin: EdgeInsets.only(left: 10,right: 10,top: 20),
+                      child: RobotRouteView(),
+                      // child: RobotMoveView(),
+                    )
+                        : Container(),
+                    mode == 3
+                        ? Container(
+                      child: RemoteControlView(),
+                    )
+                        : Container(
+                      margin: EdgeInsets.only(top: 12),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            child: Image(
+                              image: AssetImage(
+                                  'images/connect/select_area_line.png'),
+                            ),
+                            width: Constants.screenWidth(context),
+                            height:
+                            (Constants.screenWidth(context) - 58 * 2) *
+                                (813 / 522) /
+                                2 +
+                                180,
+                          ),
+                          mode == 1
+                              ? Positioned(
+                              left: 16,
+                              right: 16,
+                              top: restModeTotalViewTopMargin.toDouble(),
+                              child: TrainModeTotalView(leftMargin: robotLeftMargin,topMargin: robotTopMargin,robotAngle: robotAngles,ballList: trueBallList,))
+                              : Positioned(
+                            child: Container(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  child: GestureDetector(onTap: (){
+                    print('移动到球场中间');
+                    // 真实球场宽 10.97m   高23.77m
+                    RobotManager().setRobotMove(0, (109 / 2).round());
+                    },
+                  child: Constants.mediumWhiteTextWidget('移动到球场中间', 16 , Colors.red),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 56),
+                  child: RobotFunctionSwitchView(
+                    onTapClick: (index) {
+                      print('mode=====${index}');
+                      modeChange(index);
+                      if (index == 1) {
+                        print('屏幕宽${Constants.screenWidth(context)}');
+                        // 休息模式
+                        RobotManager().setRobotMode(RobotMode.rest);
+                        var angle = smoothAngleTransition(347, 10);
+                        print('6666-=-==${angle}');
+                        listenData();
+                       // localRobotLocationTest();
+                      } else if (index == 2) {
+                        // 训练模式
+                        RobotManager().setRobotMode(RobotMode.training);
+                      } else if (index == 3) {
+                        // 遥控模式
+                        RobotManager().setRobotMode(RobotMode.remote);
+                        // TTDialog.robotModeAlertDialog(context, () async {
+                        //   NavigatorUtil.pop();
+                        // });
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(bottom: 56),
-              child: RobotFunctionSwitchView(
-                onTapClick: (index) {
-                  print('mode=====${index}');
-                  modeChange(index);
-                  if (index == 1) {
-                    print('屏幕宽${Constants.screenWidth(context)}');
-                    // 休息模式
-                    RobotManager().setRobotMode(RobotMode.rest);
-                    var angle = smoothAngleTransition(347, 10);
-                    print('6666-=-==${angle}');
-                    listenData();
-                  } else if (index == 2) {
-                    // 训练模式
-                    RobotManager().setRobotMode(RobotMode.training);
-                  } else if (index == 3) {
-                    // 遥控模式
-                    RobotManager().setRobotMode(RobotMode.remote);
-                    // TTDialog.robotModeAlertDialog(context, () async {
-                    //   NavigatorUtil.pop();
-                    // });
-                  }
-                },
-              ),
-            ),
-          ],
+          ),
+
         ),
-      ),
     );
   }
 }
