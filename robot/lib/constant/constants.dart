@@ -163,6 +163,14 @@ class Constants {
   static Color selectedModelTransparencyBgColor = Color.fromRGBO(233, 100, 21, 0.39);
   static Color selectedModelOrangeBgColor = Color.fromRGBO(233, 100, 21, 1.0);
   static Color dialogBgColor = Color.fromRGBO(56, 58, 64, 1);
+  static Color courtListBgColor = Color.fromRGBO(49, 52, 67, 1);
+  static Color courtGridBgColor = Color.fromRGBO(6, 6, 6, 1);
+  static Color addCourtBgColor = Color.fromRGBO(15, 16, 22, 1);
+  static Color addCourtTextColor = Color.fromRGBO(248, 98, 21, 1);
+
+
+
+
 
   static String connectRobotText =
       'Connect your phone to the Bots Wi-Fi name will match your Bots serial number.The password is';
