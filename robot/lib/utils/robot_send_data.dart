@@ -91,6 +91,42 @@ List<int> moveRobotToDesignPosition(int x,int y) {
   return [start, length, cmd, data1, data2, cs, end];
 }
 
+///建图保存  建图保存
+List<int> saveRobotMapData(int index) {
+  int start = kDataFrameHeader;
+  int length = 6;
+  int cmd = 0x47;
+  int data = index;
+  int cs = start + length + cmd + data;
+  int end = kDataFrameFoot;
+  print('机器人建图保存:${[start, length, cmd, data, cs, end]}');
+  return [start, length, cmd, data, cs, end];
+}
+
+///重新绘制建的图
+List<int> resetRobotMapData(int index) {
+  int start = kDataFrameHeader;
+  int length = 6;
+  int cmd = 0x48;
+  int data = 0;
+  int cs = start + length + cmd + data;
+  int end = kDataFrameFoot;
+  print('机器人读取建图:${[start, length, cmd, data, cs, end]}');
+  return [start, length, cmd, data, cs, end];
+}
+
+///读取建的图  读取建的图
+List<int> readRobotMapData(int index) {
+  int start = kDataFrameHeader;
+  int length = 6;
+  int cmd = 0x49;
+  int data = index;
+  int cs = start + length + cmd + data;
+  int end = kDataFrameFoot;
+  print('机器人读取建图:${[start, length, cmd, data, cs, end]}');
+  return [start, length, cmd, data, cs, end];
+}
+
 List<int> manualFetchData(ManualFetchType type){
   List<int> _cmds = [
     0x20,
