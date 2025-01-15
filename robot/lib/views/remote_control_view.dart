@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tennis_robot/constant/constants.dart';
-import 'package:tennis_robot/utils/color.dart';
 import 'dart:math' as math;
-import 'package:tennis_robot/utils/robot_manager.dart';
-import 'package:tennis_robot/utils/string_util.dart';
 import 'package:vibration/vibration.dart';
+
+import '../global/setting.dart';
+import '../provider/ros_channel.dart';
 
 class RemoteControlView extends StatefulWidget {
   const RemoteControlView({super.key});
@@ -61,7 +62,7 @@ class _RemoteControlViewState extends State<RemoteControlView> {
       width: Constants.screenWidth(context) - 40 *3,
       height: Constants.screenWidth(context) - 40*3,
       decoration: BoxDecoration(
-          color: hexStringToColor('#2B2C30'),
+          color: Color.fromRGBO(43, 44, 48, 1),
           borderRadius: BorderRadius.circular(
               (Constants.screenWidth(context) - 40*3) / 2.0)),
       child: Stack(
@@ -204,58 +205,56 @@ class _RemoteControlViewState extends State<RemoteControlView> {
                     position += details.delta;
                     // 限制圆点在试图A内部移动
                     position = _clampOffsetToCircle(position, ((Constants.screenWidth(context) - 40*3) / 2.0));
-                    print('位置信息为${position}');
 
-                    // 防止刚开始出现 350---> 5 角度摆动情况，导致机器人出现转向的bug
-                    if (position.dx.abs() < 2  && position.dy.abs() < 2) {
-                      return;
-                    }
+                   if (_updateTime(position, 0) > 100) { // 发送角度间隔需大于20毫秒
+                     var radius = (Constants.screenWidth(context) - 40 *3) / 2;
+                     print('位置信息为${position}');
 
-                    // var angle = math.atan2(position.dy, position.dx);
-                    // var degrees = angle * (180 / math.pi) + 90;
-                    // print('拖动时轮盘的角度${degrees}');
+                     double max_vw =
+                     double.parse(globalSetting.getConfig('MaxVw'));
+                     double max_vx =
+                     double.parse(globalSetting.getConfig('MaxVx'));
 
-                    index += 1;
-                    if (index == 3) {
-                      firstPosition = Offset(0, position.dy);
-                      print('开始拖动y的偏移量${position.dy}');
-                    }
+                     print('速度MaxVx-${globalSetting.getConfig('MaxVx')}');
+                     print('速度MaxVw-${globalSetting.getConfig('MaxVw')}');
 
-                    var yOffset = position.dy;
-                    if (firstPosition.dy > 0 &&yOffset < 0) {
-                      yOffset = math.max(position.dy.abs(), position.dy);
-                      position = Offset(position.dx, yOffset);
-                      // print('下半圆');
-                    }
-
-                    if (firstPosition.dy <0 && yOffset > 0) {
-                      yOffset = math.min(position.dy.abs(), position.dy);
-                      position = Offset(position.dx, -yOffset);
-                      // print('上半圆');
-                    }
-
-                    var angle = math.atan2(position.dy, position.dx);
-                    var degrees = angle * (180 / math.pi) + 90;
-                    if (degrees < 0) {
-                      degrees = degrees + 360;
-                    }
-                    print('${getCurrentTime()}---角度${degrees.toInt()}');
-                    //记录下本次的时间
-                    // lastTime = DateTime.now();
-                    // var timeInterval = StringUtil.differenceInSeconds(lastTime, DateTime.now());
-                    // print('间隔${timeInterval}');
+                     if (position.dx.abs() > position.dy.abs()) {
+                       double vw = max_vw * (position.dx /radius) * -1;
+                       Provider.of<RosChannel>(context, listen: false)
+                           .setVw(vw);
+                       print('轮盘设置的vw为${vw}');
+                     } else if (position.dx.abs() < position.dy.abs()) {
+                       double vx = max_vx * (position.dy / radius) * -1;
+                       Provider.of<RosChannel>(context, listen: false)
+                           .setVxRight(vx);
+                       print('轮盘设置的vx为${vx}');
+                     }
+                     if (position.dx.abs() == 0) {
+                       Provider.of<RosChannel>(context, listen: false)
+                           .setVxRight(0);
+                     }
+                     if (position.dy.abs() == 0) {
+                       Provider.of<RosChannel>(context, listen: false)
+                           .setVw(0);
+                     }
+                   }
                   });
                 },
                 onPanEnd: (details) {
                   // 手指松开时，将圆点移动回试图A的中心
                   setState(() {
+                    Provider.of<RosChannel>(context, listen: false)
+                        .setVy(0);
+                    Provider.of<RosChannel>(context, listen: false)
+                        .setVxRight(0);
+                    Provider.of<RosChannel>(context, listen: false)
+                        .setVw(0);
+
                     index = 0;
                     // 结束拖拽
                     firstPosition = Offset(0, 0);
                     position = Offset(0, 0);
                     isMove = false;
-
-
                   });
                 },
                 child: Transform.translate(
@@ -288,7 +287,7 @@ class _RemoteControlViewState extends State<RemoteControlView> {
         _lastUpdateTime = DateTime.now();
       }
     } else {
-      if (timeDifference > 10) {
+      if (timeDifference > 100) {
         _lastUpdateTime = DateTime.now();
       }
     }

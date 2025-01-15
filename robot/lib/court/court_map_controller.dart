@@ -149,8 +149,6 @@ class _CourtMapControllerState extends State<CourtMapController> {
                         ),
                       ),
                       SizedBox(width: 24,),
-
-
                     ],
 
                   ),

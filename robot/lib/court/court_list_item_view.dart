@@ -16,7 +16,6 @@ class _CourtListItemViewState extends State<CourtListItemView> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // behavior: HitTestBehavior.opaque,
       onTap: (){
       },
       child: Container(
@@ -38,9 +37,7 @@ class _CourtListItemViewState extends State<CourtListItemView> {
                       color: Constants.courtGridBgColor,
 
                   ),
-
                   SizedBox(width: 12,),
-
                   Container(
                     margin: EdgeInsets.only(top: 37,left: 0),
                     child: Column(
@@ -76,10 +73,7 @@ class _CourtListItemViewState extends State<CourtListItemView> {
                             ],
                           ),
                         )
-
                       ]
-
-
                     ),
                   ),
                 ],

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tennis_robot/court/court_list_view.dart';
 import 'package:tennis_robot/models/CourtModel.dart';
 import 'package:tennis_robot/route/routes.dart';
-
 import '../constant/constants.dart';
 import '../utils/navigator_util.dart';
 
@@ -30,11 +29,12 @@ class _CourtListControllerState extends State<CourtListController> {
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(onTap: (){
-                      NavigatorUtil.pop();
+                    //  NavigatorUtil.pop();
+                      Navigator.pop(context); // 返回到上一个页面
                     },
                       child: Container(
                         //  padding: EdgeInsets.all(12.0),
-                        padding: EdgeInsets.only(left: 0,top: 12,bottom: 12,right: 24),
+                       padding: EdgeInsets.only(left: 0,top: 12,bottom: 12,right: 24),
                         color:  Constants.darkControllerColor,
                         width: 48,
                         height: 48,
@@ -53,13 +53,13 @@ class _CourtListControllerState extends State<CourtListController> {
                         fontSize: 22,
                       ),
                     ),
-                    Text('123456')
+                    Text('')
                   ],
                 ),
               ),
 
               Expanded(child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20,bottom: 8),
+                padding: EdgeInsets.only(left: 20, right: 20,top: 32),
                 child: CourtListView(datas: [Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
                   Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
                   Courtmodel('', 'courtName', 'courtAddress', 'courtDate')],
@@ -67,12 +67,19 @@ class _CourtListControllerState extends State<CourtListController> {
               )
               ),
 
-            //  SizedBox(height: 8,),
+              // Container(
+              //   padding: EdgeInsets.only(left: 20, right: 20,top: 8),
+              //   child: CourtListView(datas: [Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
+              //     // Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
+              //     Courtmodel('', 'courtName', 'courtAddress', 'courtDate')],
+              //   ),
+              // ),
 
               GestureDetector(onTap: (){
-                NavigatorUtil.push(Routes.courtMap);
-              },
+                Navigator.pushNamed(context, "/court");
+                },
               child: Container(
+                margin: EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   color: Constants.addCourtBgColor,
                   borderRadius: BorderRadius.circular(24),
@@ -90,16 +97,13 @@ class _CourtListControllerState extends State<CourtListController> {
                     SizedBox(height: 9,),
                     Constants.regularWhiteTextWidget('Add New Court', 16,Constants.addCourtTextColor),
                   ],
-
                 ),
               ),
               ),
-
              SizedBox(height: 8,)
             ]
         ),
       ),
     );
-
   }
 }
