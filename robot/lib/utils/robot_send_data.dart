@@ -127,6 +127,32 @@ List<int> readRobotMapData(int index) {
   return [start, length, cmd, data, cs, end];
 }
 
+/// 开启新的建图
+List<int> openNewRobotMapData(int index) {
+  int start = kDataFrameHeader;
+  int length = 6;
+  int cmd = 0x50;
+  int data = index;
+  int cs = start + length + cmd + data;
+  int end = kDataFrameFoot;
+  print('机器人开启新的建图:${[start, length, cmd, data, cs, end]}');
+  return [start, length, cmd, data, cs, end];
+}
+
+/// 发送读取当前建图占据面积申请
+List<int> readRobotMapAreaData() {
+  int start = kDataFrameHeader;
+  int length = 6;
+  int cmd = 0x52;
+  int data = 0;
+  int cs = start + length + cmd + data;
+  int end = kDataFrameFoot;
+  print('发送读取当前建图占据面积申请:${[start, length, cmd, data, cs, end]}');
+  return [start, length, cmd, data, cs, end];
+}
+
+
+
 List<int> manualFetchData(ManualFetchType type){
   List<int> _cmds = [
     0x20,

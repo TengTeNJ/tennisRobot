@@ -16,6 +16,9 @@ class ResponseCMDType {
   static const int speed = 0x42; // 机器人速度
   static const int coordinate = 0x43; // 机器人坐标
   static const int ballsInView = 0x44; // 机器人视野的所有数据
+  static const int robotSaveMapSuccess = 0x51; //机器人保存建图成功
+  static const int robotMapAreaResponse = 0x53; // 建图的面积
+
 }
 class TcpUtil {
   Socket? socket;
@@ -34,9 +37,7 @@ class TcpUtil {
     print(' ip===${wifiIP}');
     print(' wifi name === ${wifiName}');
     try {
-      // 192.168.10.48 杨工
-      // Albert  192.168.2.114
-     final Socket socket = await Socket.connect('192.168.2.114', port);
+      final Socket socket = await Socket.connect('10.42.0.57', port);
 
       // final Socket socket = await Socket.connect((wifiIP != null && wifiIP.length > 0) ? wifiIP : host, port);
       // 赋值
