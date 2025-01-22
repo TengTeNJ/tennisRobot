@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:tennis_robot/global/setting.dart';
 //import 'package:geolocator_platform_interface/src/models/position.dart';
 import '../Constant/constants.dart';
 //import '../basic/transform.dart';
@@ -55,31 +56,31 @@ class _CourtInfoInputPageState extends State<CourtInfoInputPage> {
             //   },
                  child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(onTap: (){
-                           getCurrentLocation();
-                           },
-                          child: Container(
-                            margin: EdgeInsets.only(right: 12,top: 12),
-                            alignment: Alignment.topRight,
-                            width: 84,
-                            height:34 ,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(17),
-                              color: Constants.addCourtTextColor,
-                            ),
-                            child: Center(
-                              child: Constants.mediumWhiteTextWidget('Save', 16, Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   children: [
+                    //     GestureDetector(onTap: (){
+                    //        getCurrentLocation();
+                    //        },
+                    //       child: Container(
+                    //         margin: EdgeInsets.only(right: 12,top: 12),
+                    //         alignment: Alignment.topRight,
+                    //         width: 84,
+                    //         height:34 ,
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(17),
+                    //           color: Constants.addCourtTextColor,
+                    //         ),
+                    //         child: Center(
+                    //           child: Constants.mediumWhiteTextWidget('Save', 16, Colors.white),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     Container(
                       width: Constants.screenWidth(context),
-                      margin: EdgeInsets.only(left: 30, right: 70, top: 20),
+                      margin: EdgeInsets.only(left: 30, right: 70, top: 56),
                       child: Constants.regularWhiteTextWidget('Court Name', 18, Colors.white,textAlign: TextAlign.left),
                     ),
 
@@ -89,6 +90,9 @@ class _CourtInfoInputPageState extends State<CourtInfoInputPage> {
                       child: TextField(
                         cursorColor: Color.fromRGBO(248, 98, 21, 1),
                         onChanged:(value) {
+                          globalSetting.setRobotMapName(value);
+                          print('00088888${value}');
+
                           if (_emailController.text != '' && _nickController.text != ''){
                             setState(() {
                               isConnected = true;
@@ -129,6 +133,7 @@ class _CourtInfoInputPageState extends State<CourtInfoInputPage> {
                       height:44 ,
                       child: TextField(
                         onChanged:(value) {
+                          globalSetting.setRobotMapLocation(value);
                           if (_emailController.text != '' && _nickController.text != ''){
                             setState(() {
                               isConnected = true;

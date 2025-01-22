@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_joystick/flutter_joystick.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_robot/basic/RobotPose.dart';
 import 'package:tennis_robot/basic/gamepad_widget.dart';
@@ -27,23 +30,34 @@ import 'package:tennis_robot/provider/global_state.dart';
 import 'package:tennis_robot/provider/ros_channel.dart';
 import 'package:tennis_robot/display/display_map.dart';
 import 'package:tennis_robot/display/display_grid.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
+import 'package:tennis_robot/utils/string_util.dart';
+import 'package:tennis_robot/utils/toast.dart';
 import 'package:toast/toast.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:tennis_robot/display/display_waypoint.dart';
 
 import '../Constant/constants.dart';
+import '../models/CourtModel.dart';
+import '../utils/data_base.dart';
+import 'dart:ui' as ui;
+
+import '../utils/dialog.dart';
 
 class MapPage extends StatefulWidget {
   Function? nextClick;
+  String nextTitle;
 
   //const MapPage({super.key});
-  MapPage({this.nextClick});
+  MapPage({this.nextClick,required this.nextTitle});
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
+  GlobalKey _globalKey = GlobalKey();
+
   ValueNotifier<bool> manualCtrlMode_ = ValueNotifier(false);
   ValueNotifier<List<RobotPose>> navPointList_ =
       ValueNotifier<List<RobotPose>>([]);
@@ -430,6 +444,64 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
   }
 
+  Future<Uint8List?> takeScreenshot(GlobalKey globayKey) async {
+    try {
+      RenderRepaintBoundary boundary = globayKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0); // 调整分辨率以适应高像素密度设备
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData != null) {
+        Uint8List pngBytes = byteData.buffer.asUint8List();
+        if (pngBytes != null) {
+          var result =( await ImageGallerySaver.saveImage(pngBytes)).toString();
+          print('666000${result}');
+
+        } else {
+
+        }
+        return pngBytes;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  void shotScreenAndSaveData() async{
+   // String shotImagePath = saveScreenshot(_globalKey);
+   var imageData = takeScreenshot(_globalKey);
+   if (globalSetting.RobotMapName == ''  || globalSetting.RobotMapLocation == '') {
+     //TTToast.showToast('请输入球场信息');
+     EasyLoading.showError('请输入球场信息');
+
+     print('没有球场信息');
+     return;
+   }
+   print('有球场信息');
+
+   // print('保存的图片地址为${shotImagePath}');
+    /// 本地保存建图信息
+    final courtList = await DataBaseHelper().getCourtData(
+        kDataBaseCourtTableName);
+    if (courtList.length == 0) {
+      RobotManager().saveRobotMap(0);
+      var todayTime = StringUtil.currentTimeString();
+      var model = Courtmodel(
+          '0', '', globalSetting.RobotMapName, globalSetting.RobotMapLocation, todayTime);
+      DataBaseHelper().insertCourtData(kDataBaseCourtTableName, model);
+    } else {
+      var model = courtList.last;
+      var todayTime = StringUtil.currentTimeString();
+      var currentIndex = (int.parse(model.courtIndex) + 1).toString(); //索引递增
+      var currentModel = Courtmodel(
+          currentIndex, '', globalSetting.RobotMapName,  globalSetting.RobotMapLocation, todayTime);
+      DataBaseHelper().insertCourtData(kDataBaseCourtTableName, currentModel);
+      RobotManager().saveRobotMap(int.parse(model.courtIndex) + 1);
+    }
+    /// 球场信息置空
+    globalSetting.setRobotMapName('');
+    globalSetting.setRobotMapLocation('');
+  }
+
   @override
   Widget build(BuildContext context) {
     ToastContext().init(context);
@@ -491,437 +563,440 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                                 Offset(robotPoseScene.x, robotPoseScene.y);
                           }
 
-                          return Stack(
-                            children: [
-                              //网格
-                              Container(
-                                child: DisplayGrid(
-                                  step: (1 /
-                                          Provider.of<RosChannel>(context)
-                                              .map
-                                              .value
-                                              .mapConfig
-                                              .resolution) *
-                                      (scaleValue > 0.8 ? scaleValue : 0.8),
-                                  width: screenSize.width,
-                                  height: screenSize.height,
+                          return RepaintBoundary(
+                            key: _globalKey,
+                            child: Stack(
+                              children: [
+                                ///网格
+                                Container(
+                                  child: DisplayGrid(
+                                    step: (1 /
+                                        Provider.of<RosChannel>(context)
+                                            .map
+                                            .value
+                                            .mapConfig
+                                            .resolution) *
+                                        (scaleValue > 0.8 ? scaleValue : 0.8),
+                                    width: screenSize.width,
+                                    height: screenSize.height,
+                                  ),
                                 ),
-                              ),
-                              ///地图
-                              Transform(
-                                transform: globalTransform,
-                                origin: originPose,
-                                child: GestureDetector(
-                                  child: const DisplayMap(),
-                                  onTapDown: (details) {
-                                    if (Provider.of<GlobalState>(context,
-                                                listen: false)
-                                            .mode
-                                            .value ==
-                                        Mode.addNavPoint) {
-                                      navPointList_.value.add(RobotPose(
-                                          details.localPosition.dx,
-                                          details.localPosition.dy,
-                                          0));
-                                      setState(() {});
-                                    }
-                                  },
-                                ),
-                              ),
-
-                              //全局路径
-                              Transform(
-                                transform: globalTransform,
-                                origin: originPose,
-                                child: RepaintBoundary(
-                                  child: ValueListenableBuilder<List<Offset>>(
-                                    valueListenable: Provider.of<RosChannel>(
-                                            context,
-                                            listen: false)
-                                        .globalPath,
-                                    builder: (context, path, child) {
-                                      return Container(
-                                        child: CustomPaint(
-                                          painter: DisplayPath(
-                                              pointList: path,
-                                              color: Colors.green),
-                                        ),
-                                      );
+                                ///地图
+                                Transform(
+                                  transform: globalTransform,
+                                  origin: originPose,
+                                  child: GestureDetector(
+                                    child: const DisplayMap(),
+                                    onTapDown: (details) {
+                                      if (Provider.of<GlobalState>(context,
+                                          listen: false)
+                                          .mode
+                                          .value ==
+                                          Mode.addNavPoint) {
+                                        navPointList_.value.add(RobotPose(
+                                            details.localPosition.dx,
+                                            details.localPosition.dy,
+                                            0));
+                                        setState(() {});
+                                      }
                                     },
                                   ),
                                 ),
-                              ),
-                              //局部路径
-                              Transform(
-                                transform: globalTransform,
-                                origin: originPose,
-                                child: RepaintBoundary(
-                                    child: ValueListenableBuilder<List<Offset>>(
-                                  valueListenable: Provider.of<RosChannel>(
-                                          context,
-                                          listen: false)
-                                      .localPath,
-                                  builder: (context, path, child) {
-                                    return Container(
-                                      child: CustomPaint(
-                                        painter: DisplayPath(
-                                            pointList: path,
-                                            color: Colors.yellow[200]!),
-                                      ),
-                                    );
-                                  },
-                                )),
-                              ),
-
-                              //激光
-                              Transform(
-                                transform: globalTransform,
-                                origin: originPose,
-                                child: RepaintBoundary(
-                                    child: ValueListenableBuilder<LaserData>(
-                                        valueListenable:
-                                            Provider.of<RosChannel>(context,
-                                                    listen: false)
-                                                .laserPointData,
-                                        builder: (context, laserData, child) {
-                                          RobotPose robotPoseMap =
-                                              laserData.robotPose;
-                                          var map = Provider.of<RosChannel>(
-                                                  context,
-                                                  listen: false)
-                                              .map
-                                              .value;
-                                          //重定位模式 从图层坐标转换
-                                          if (Provider.of<GlobalState>(context,
-                                                      listen: false)
-                                                  .mode
-                                                  .value ==
-                                              Mode.reloc) {
-                                            Offset poseMap = map.idx2xy(Offset(
-                                                poseSceneOnReloc.x,
-                                                poseSceneOnReloc.y));
-                                            robotPoseMap = RobotPose(
-                                                poseMap.dx,
-                                                poseMap.dy,
-                                                poseSceneOnReloc.theta);
-                                          }
-
-                                          List<Offset> laserPointsScene = [];
-                                          for (var point
-                                              in laserData.laserPoseBaseLink) {
-                                            RobotPose pointMap = absoluteSum(
-                                                robotPoseMap,
-                                                RobotPose(
-                                                    point.dx, point.dy, 0));
-                                            Offset pointScene = map.xy2idx(
-                                                Offset(pointMap.x, pointMap.y));
-                                            laserPointsScene.add(pointScene);
-                                          }
-                                          return IgnorePointer(
-                                              ignoring: true,
-                                              child: DisplayLaser(
-                                                  pointList: laserPointsScene));
-                                        })),
-                              ),
-                              //导航点
-                              ...navPointList_.value.map((pose) {
-                                return Transform(
+                                //全局路径
+                                Transform(
                                   transform: globalTransform,
                                   origin: originPose,
-                                  child: Transform(
-                                    alignment: Alignment.center,
-                                    transform: Matrix4.identity()
-                                      ..translate(
-                                          pose.x -
-                                              navPoseSize / 2 -
-                                              poseDirectionSwellSize / 2,
-                                          pose.y -
-                                              navPoseSize / 2 -
-                                              poseDirectionSwellSize / 2)
-                                      ..rotateZ(-pose.theta),
-                                    child: MatrixGestureDetector(
-                                      onMatrixUpdate: (matrix, transDelta,
-                                          scaleDelta, rotateDelta) {
-                                        if (Provider.of<GlobalState>(context,
-                                                    listen: false)
+                                  child: RepaintBoundary(
+                                    child: ValueListenableBuilder<List<Offset>>(
+                                      valueListenable: Provider.of<RosChannel>(
+                                          context,
+                                          listen: false)
+                                          .globalPath,
+                                      builder: (context, path, child) {
+                                        return Container(
+                                          child: CustomPaint(
+                                            painter: DisplayPath(
+                                                pointList: path,
+                                                color: Colors.green),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                //局部路径
+                                Transform(
+                                  transform: globalTransform,
+                                  origin: originPose,
+                                  child: RepaintBoundary(
+                                      child: ValueListenableBuilder<List<Offset>>(
+                                        valueListenable: Provider.of<RosChannel>(
+                                            context,
+                                            listen: false)
+                                            .localPath,
+                                        builder: (context, path, child) {
+                                          return Container(
+                                            child: CustomPaint(
+                                              painter: DisplayPath(
+                                                  pointList: path,
+                                                  color: Colors.yellow[200]!),
+                                            ),
+                                          );
+                                        },
+                                      )),
+                                ),
+
+                                //激光
+                                Transform(
+                                  transform: globalTransform,
+                                  origin: originPose,
+                                  child: RepaintBoundary(
+                                      child: ValueListenableBuilder<LaserData>(
+                                          valueListenable:
+                                          Provider.of<RosChannel>(context,
+                                              listen: false)
+                                              .laserPointData,
+                                          builder: (context, laserData, child) {
+                                            RobotPose robotPoseMap =
+                                                laserData.robotPose;
+                                            var map = Provider.of<RosChannel>(
+                                                context,
+                                                listen: false)
+                                                .map
+                                                .value;
+                                            //重定位模式 从图层坐标转换
+                                            if (Provider.of<GlobalState>(context,
+                                                listen: false)
                                                 .mode
                                                 .value ==
-                                            Mode.addNavPoint) {
-                                          // 移动距离的delta距离需要除于当前的scale的值
-                                          double dx =
-                                              transDelta.dx / scaleValue;
-                                          double dy =
-                                              transDelta.dy / scaleValue;
-                                          double tmpTheta = pose.theta;
-                                          pose = absoluteSum(
-                                              RobotPose(
-                                                  pose.x, pose.y, pose.theta),
-                                              RobotPose(dx, dy, 0));
-                                          pose.theta = tmpTheta;
-                                          setState(() {});
-                                        }
-                                      },
-                                      child: GestureDetector(
-                                        onDoubleTap: () {
+                                                Mode.reloc) {
+                                              Offset poseMap = map.idx2xy(Offset(
+                                                  poseSceneOnReloc.x,
+                                                  poseSceneOnReloc.y));
+                                              robotPoseMap = RobotPose(
+                                                  poseMap.dx,
+                                                  poseMap.dy,
+                                                  poseSceneOnReloc.theta);
+                                            }
+
+                                            List<Offset> laserPointsScene = [];
+                                            for (var point
+                                            in laserData.laserPoseBaseLink) {
+                                              RobotPose pointMap = absoluteSum(
+                                                  robotPoseMap,
+                                                  RobotPose(
+                                                      point.dx, point.dy, 0));
+                                              Offset pointScene = map.xy2idx(
+                                                  Offset(pointMap.x, pointMap.y));
+                                              laserPointsScene.add(pointScene);
+                                            }
+                                            return IgnorePointer(
+                                                ignoring: true,
+                                                child: DisplayLaser(
+                                                    pointList: laserPointsScene));
+                                          })),
+                                ),
+                                //导航点
+                                ...navPointList_.value.map((pose) {
+                                  return Transform(
+                                    transform: globalTransform,
+                                    origin: originPose,
+                                    child: Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.identity()
+                                        ..translate(
+                                            pose.x -
+                                                navPoseSize / 2 -
+                                                poseDirectionSwellSize / 2,
+                                            pose.y -
+                                                navPoseSize / 2 -
+                                                poseDirectionSwellSize / 2)
+                                        ..rotateZ(-pose.theta),
+                                      child: MatrixGestureDetector(
+                                        onMatrixUpdate: (matrix, transDelta,
+                                            scaleDelta, rotateDelta) {
                                           if (Provider.of<GlobalState>(context,
-                                                      listen: false)
-                                                  .mode
-                                                  .value ==
+                                              listen: false)
+                                              .mode
+                                              .value ==
                                               Mode.addNavPoint) {
-                                            // 双击删除导航点
-                                            navPointList_.value =
-                                                List.from(navPointList_.value)
-                                                  ..remove(pose);
-                                            setState(() {});
-                                          }
-                                        },
-                                        onPanUpdate: (details) {
-                                          if (Provider.of<GlobalState>(context,
-                                                      listen: false)
-                                                  .mode
-                                                  .value ==
-                                              Mode.addNavPoint) {
-                                            // 更新导航点位置
+                                            // 移动距离的delta距离需要除于当前的scale的值
                                             double dx =
-                                                details.delta.dx / scaleValue;
+                                                transDelta.dx / scaleValue;
                                             double dy =
-                                                details.delta.dy / scaleValue;
-                                            pose.x += dx;
-                                            pose.y += dy;
+                                                transDelta.dy / scaleValue;
+                                            double tmpTheta = pose.theta;
+                                            pose = absoluteSum(
+                                                RobotPose(
+                                                    pose.x, pose.y, pose.theta),
+                                                RobotPose(dx, dy, 0));
+                                            pose.theta = tmpTheta;
                                             setState(() {});
                                           }
                                         },
-                                        child: Container(
-                                          height: navPoseSize +
-                                              poseDirectionSwellSize,
-                                          width: navPoseSize +
-                                              poseDirectionSwellSize,
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              Visibility(
-                                                visible:
-                                                    Provider.of<GlobalState>(
-                                                                context,
-                                                                listen: false)
-                                                            .mode
-                                                            .value ==
-                                                        Mode.addNavPoint,
-                                                child: DisplayPoseDirection(
-                                                  size: navPoseSize +
-                                                      poseDirectionSwellSize,
-                                                  initAngle: -pose.theta,
-                                                  resetAngle: false,
-                                                  onRotateCallback: (angle) {
-                                                    pose.theta = -angle;
-                                                    setState(() {});
+                                        child: GestureDetector(
+                                          onDoubleTap: () {
+                                            if (Provider.of<GlobalState>(context,
+                                                listen: false)
+                                                .mode
+                                                .value ==
+                                                Mode.addNavPoint) {
+                                              // 双击删除导航点
+                                              navPointList_.value =
+                                              List.from(navPointList_.value)
+                                                ..remove(pose);
+                                              setState(() {});
+                                            }
+                                          },
+                                          onPanUpdate: (details) {
+                                            if (Provider.of<GlobalState>(context,
+                                                listen: false)
+                                                .mode
+                                                .value ==
+                                                Mode.addNavPoint) {
+                                              // 更新导航点位置
+                                              double dx =
+                                                  details.delta.dx / scaleValue;
+                                              double dy =
+                                                  details.delta.dy / scaleValue;
+                                              pose.x += dx;
+                                              pose.y += dy;
+                                              setState(() {});
+                                            }
+                                          },
+                                          child: Container(
+                                            height: navPoseSize +
+                                                poseDirectionSwellSize,
+                                            width: navPoseSize +
+                                                poseDirectionSwellSize,
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Visibility(
+                                                  visible:
+                                                  Provider.of<GlobalState>(
+                                                      context,
+                                                      listen: false)
+                                                      .mode
+                                                      .value ==
+                                                      Mode.addNavPoint,
+                                                  child: DisplayPoseDirection(
+                                                    size: navPoseSize +
+                                                        poseDirectionSwellSize,
+                                                    initAngle: -pose.theta,
+                                                    resetAngle: false,
+                                                    onRotateCallback: (angle) {
+                                                      pose.theta = -angle;
+                                                      setState(() {});
+                                                    },
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTapDown: (details) {
+                                                    if (Provider.of<GlobalState>(
+                                                        context,
+                                                        listen: false)
+                                                        .mode
+                                                        .value ==
+                                                        Mode.normal) {
+                                                      Provider.of<RosChannel>(
+                                                          context,
+                                                          listen: false)
+                                                          .sendNavigationGoal(
+                                                          RobotPose(
+                                                              pose.x,
+                                                              pose.y,
+                                                              pose.theta));
+                                                      currentNavGoal_ = pose;
+                                                      setState(() {});
+                                                    }
                                                   },
+                                                  child: DisplayWayPoint(
+                                                    size: navPoseSize,
+                                                    color: currentNavGoal_ == pose
+                                                        ? Colors.pink
+                                                        : Colors.green,
+                                                    count: 4,
+                                                  ),
                                                 ),
-                                              ),
-                                              GestureDetector(
-                                                onTapDown: (details) {
-                                                  if (Provider.of<GlobalState>(
-                                                              context,
-                                                              listen: false)
-                                                          .mode
-                                                          .value ==
-                                                      Mode.normal) {
-                                                    Provider.of<RosChannel>(
-                                                            context,
-                                                            listen: false)
-                                                        .sendNavigationGoal(
-                                                            RobotPose(
-                                                                pose.x,
-                                                                pose.y,
-                                                                pose.theta));
-                                                    currentNavGoal_ = pose;
-                                                    setState(() {});
-                                                  }
-                                                },
-                                                child: DisplayWayPoint(
-                                                  size: navPoseSize,
-                                                  color: currentNavGoal_ == pose
-                                                      ? Colors.pink
-                                                      : Colors.green,
-                                                  count: 4,
-                                                ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                              //机器人位置（固定视角）
-                              Visibility(
-                                visible: Provider.of<GlobalState>(context,
-                                            listen: false)
-                                        .mode
-                                        .value ==
-                                    Mode.robotFixedCenter,
-                                child: Positioned(
-                                  left: screenCenter.dx -
-                                      (robotSize / 2 * cameraFixedScaleValue_),
-                                  top: screenCenter.dy -
-                                      (robotSize / 2 * cameraFixedScaleValue_),
-                                  child: Transform(
-                                    transform: Matrix4.identity()
-                                      ..scale(cameraFixedScaleValue_),
-                                    child: DisplayRobot(
-                                      direction: deg2rad(-90),
-                                      size: robotSize,
-                                      color: Colors.blue,
-                                      count: 2,
+                                  );
+                                }).toList(),
+                                //机器人位置（固定视角）
+                                Visibility(
+                                  visible: Provider.of<GlobalState>(context,
+                                      listen: false)
+                                      .mode
+                                      .value ==
+                                      Mode.robotFixedCenter,
+                                  child: Positioned(
+                                    left: screenCenter.dx -
+                                        (robotSize / 2 * cameraFixedScaleValue_),
+                                    top: screenCenter.dy -
+                                        (robotSize / 2 * cameraFixedScaleValue_),
+                                    child: Transform(
+                                      transform: Matrix4.identity()
+                                        ..scale(cameraFixedScaleValue_),
+                                      child: DisplayRobot(
+                                        direction: deg2rad(-90),
+                                        size: robotSize,
+                                        color: Colors.blue,
+                                        count: 2,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              //机器人位置(不固定视角)
-                              Visibility(
-                                  visible: Provider.of<GlobalState>(context,
-                                              listen: false)
+                                //机器人位置(不固定视角)
+                                Visibility(
+                                    visible: Provider.of<GlobalState>(context,
+                                        listen: false)
+                                        .mode
+                                        .value !=
+                                        Mode.robotFixedCenter,
+                                    child: Transform(
+                                      transform: Provider.of<GlobalState>(context,
+                                          listen: false)
                                           .mode
-                                          .value !=
-                                      Mode.robotFixedCenter,
-                                  child: Transform(
-                                    transform: Provider.of<GlobalState>(context,
-                                                    listen: false)
-                                                .mode
-                                                .value ==
-                                            Mode.robotFixedCenter
-                                        ? cameraFixedTransform
-                                        : gestureTransform.value,
-                                    child: Consumer<RosChannel>(
-                                      builder: (context, rosChannel, child) {
-                                        if (!(Provider.of<GlobalState>(context,
-                                                    listen: false)
-                                                .mode
-                                                .value ==
-                                            Mode.reloc)) {
-                                          robotPose_.value = robotPoseScene;
-                                        }
+                                          .value ==
+                                          Mode.robotFixedCenter
+                                          ? cameraFixedTransform
+                                          : gestureTransform.value,
+                                      child: Consumer<RosChannel>(
+                                        builder: (context, rosChannel, child) {
+                                          if (!(Provider.of<GlobalState>(context,
+                                              listen: false)
+                                              .mode
+                                              .value ==
+                                              Mode.reloc)) {
+                                            robotPose_.value = robotPoseScene;
+                                          }
 
-                                        return Transform(
-                                            alignment: Alignment.center,
-                                            transform: Matrix4.identity()
-                                              ..translate(
-                                                  robotPose_.value.x -
-                                                      robotSize / 2 -
-                                                      poseDirectionSwellSize /
-                                                          2,
-                                                  robotPose_.value.y -
-                                                      robotSize / 2 -
-                                                      poseDirectionSwellSize /
-                                                          2)
-                                              ..rotateZ(
-                                                  -robotPose_.value.theta),
-                                            child: MatrixGestureDetector(
-                                              onMatrixUpdate: (matrix,
-                                                  transDelta,
-                                                  scaleDelta,
-                                                  rotateDelta) {
-                                                if (Provider.of<GlobalState>(
+                                          return Transform(
+                                              alignment: Alignment.center,
+                                              transform: Matrix4.identity()
+                                                ..translate(
+                                                    robotPose_.value.x -
+                                                        robotSize / 2 -
+                                                        poseDirectionSwellSize /
+                                                            2,
+                                                    robotPose_.value.y -
+                                                        robotSize / 2 -
+                                                        poseDirectionSwellSize /
+                                                            2)
+                                                ..rotateZ(
+                                                    -robotPose_.value.theta),
+                                              child: MatrixGestureDetector(
+                                                onMatrixUpdate: (matrix,
+                                                    transDelta,
+                                                    scaleDelta,
+                                                    rotateDelta) {
+                                                  if (Provider.of<GlobalState>(
+                                                      context,
+                                                      listen: false)
+                                                      .mode
+                                                      .value ==
+                                                      Mode.reloc) {
+                                                    //获取global的scale值
+
+                                                    //移动距离的deleta距离需要除于当前的scale的值(放大后，相同移动距离，地图实际移动的要少)
+                                                    double dx = transDelta.dx /
+                                                        scaleValue;
+                                                    double dy = transDelta.dy /
+                                                        scaleValue;
+                                                    double theta =
+                                                        poseSceneOnReloc.theta;
+                                                    poseSceneOnReloc =
+                                                        absoluteSum(
+                                                            RobotPose(
+                                                                poseSceneOnReloc
+                                                                    .x,
+                                                                poseSceneOnReloc
+                                                                    .y,
+                                                                0),
+                                                            RobotPose(dx, dy, 0));
+                                                    poseSceneOnReloc.theta =
+                                                        theta;
+                                                    //坐标变换sum
+                                                    robotPose_.value =
+                                                        poseSceneOnReloc;
+                                                  }
+                                                },
+                                                child: Container(
+                                                  height: robotSize +
+                                                      poseDirectionSwellSize,
+                                                  width: robotSize +
+                                                      poseDirectionSwellSize,
+                                                  child: Stack(
+                                                    alignment: Alignment.center,
+                                                    children: [
+                                                      //重定位旋转框
+                                                      Visibility(
+                                                        visible:
+                                                        Provider.of<GlobalState>(
                                                             context,
-                                                            listen: false)
-                                                        .mode
-                                                        .value ==
-                                                    Mode.reloc) {
-                                                  //获取global的scale值
-
-                                                  //移动距离的deleta距离需要除于当前的scale的值(放大后，相同移动距离，地图实际移动的要少)
-                                                  double dx = transDelta.dx /
-                                                      scaleValue;
-                                                  double dy = transDelta.dy /
-                                                      scaleValue;
-                                                  double theta =
-                                                      poseSceneOnReloc.theta;
-                                                  poseSceneOnReloc =
-                                                      absoluteSum(
-                                                          RobotPose(
-                                                              poseSceneOnReloc
-                                                                  .x,
-                                                              poseSceneOnReloc
-                                                                  .y,
-                                                              0),
-                                                          RobotPose(dx, dy, 0));
-                                                  poseSceneOnReloc.theta =
-                                                      theta;
-                                                  //坐标变换sum
-                                                  robotPose_.value =
-                                                      poseSceneOnReloc;
-                                                }
-                                              },
-                                              child: Container(
-                                                height: robotSize +
-                                                    poseDirectionSwellSize,
-                                                width: robotSize +
-                                                    poseDirectionSwellSize,
-                                                child: Stack(
-                                                  alignment: Alignment.center,
-                                                  children: [
-                                                    //重定位旋转框
-                                                    Visibility(
-                                                      visible:
-                                                          Provider.of<GlobalState>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .mode
-                                                                  .value ==
-                                                              Mode.reloc,
-                                                      child:
-                                                          DisplayPoseDirection(
-                                                        size: robotSize +
-                                                            poseDirectionSwellSize,
-                                                        resetAngle: Provider.of<
-                                                                        GlobalState>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .mode
-                                                                .value !=
+                                                            listen:
+                                                            false)
+                                                            .mode
+                                                            .value ==
                                                             Mode.reloc,
-                                                        onRotateCallback:
-                                                            (angle) {
-                                                          poseSceneOnReloc
-                                                                  .theta =
-                                                              (poseSceneStartReloc
-                                                                      .theta -
-                                                                  angle);
-                                                          //坐标变换sum
-                                                          robotPose_.value =
-                                                              RobotPose(
-                                                                  poseSceneOnReloc
-                                                                      .x,
-                                                                  poseSceneOnReloc
-                                                                      .y,
-                                                                  poseSceneOnReloc
-                                                                      .theta);
-                                                        },
+                                                        child:
+                                                        DisplayPoseDirection(
+                                                          size: robotSize +
+                                                              poseDirectionSwellSize,
+                                                          resetAngle: Provider.of<
+                                                              GlobalState>(
+                                                              context,
+                                                              listen:
+                                                              false)
+                                                              .mode
+                                                              .value !=
+                                                              Mode.reloc,
+                                                          onRotateCallback:
+                                                              (angle) {
+                                                            poseSceneOnReloc
+                                                                .theta =
+                                                            (poseSceneStartReloc
+                                                                .theta -
+                                                                angle);
+                                                            //坐标变换sum
+                                                            robotPose_.value =
+                                                                RobotPose(
+                                                                    poseSceneOnReloc
+                                                                        .x,
+                                                                    poseSceneOnReloc
+                                                                        .y,
+                                                                    poseSceneOnReloc
+                                                                        .theta);
+                                                          },
+                                                        ),
                                                       ),
-                                                    ),
 
-                                                    //机器人图标
-                                                    DisplayRobot(
-                                                      size: robotSize,
-                                                      color: Colors.blue,
-                                                      count: 2,
-                                                    ),
-                                                    // IconButton(
-                                                    //   onPressed: () {},
-                                                    //   iconSize: robotSize / 2,
-                                                    //   icon: Icon(Icons.check),
-                                                    // ),
-                                                  ],
+                                                      //机器人图标
+                                                      DisplayRobot(
+                                                        size: robotSize,
+                                                        color: Colors.blue,
+                                                        count: 2,
+                                                      ),
+                                                      // IconButton(
+                                                      //   onPressed: () {},
+                                                      //   iconSize: robotSize / 2,
+                                                      //   icon: Icon(Icons.check),
+                                                      // ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ));
-                                      },
-                                    ),
-                                  )),
-                            ],
+                                              ));
+                                        },
+                                      ),
+                                    )),
+                              ],
+
+                            ),
                           );
                         }),
                   ));
@@ -1325,26 +1400,33 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(onTap: (){
-                    if (Provider.of<GlobalState>(context, listen: false)
-                        .mode
-                        .value ==
-                        Mode.robotFixedCenter) {
-                      Provider.of<GlobalState>(context, listen: false)
-                          .mode
-                          .value = Mode.normal;
-                      cameraFixedScaleValue_ = 1;
-                    } else {
-                      Provider.of<GlobalState>(context, listen: false)
-                          .mode
-                          .value = Mode.robotFixedCenter;
-                    }
-                    if (animationController.isAnimating) return; // 防止多次触发动画
+                    // if (Provider.of<GlobalState>(context, listen: false)
+                    //     .mode
+                    //     .value ==
+                    //     Mode.robotFixedCenter) {
+                    //   Provider.of<GlobalState>(context, listen: false)
+                    //       .mode
+                    //       .value = Mode.normal;
+                    //   cameraFixedScaleValue_ = 1;
+                    // } else {
+                    //   Provider.of<GlobalState>(context, listen: false)
+                    //       .mode
+                    //       .value = Mode.robotFixedCenter;
+                    // }
+                    // if (animationController.isAnimating) return; // 防止多次触发动画
+                    //
+                    // animationController.reset(); // 重置动画控制器
+                    // animationController.forward(); // 启动动画
 
-                    animationController.reset(); // 重置动画控制器
-                    animationController.forward(); // 启动动画
+                    TTDialog.robotRedrawMapAlertDialog(context, () async {
+                     // NavigatorUtil.pop();
+                      /// 重新绘制建图
+                      RobotManager().redrawRobotMap();
+                    });
+
+
                     setState(() {});
-
-                  },
+                    },
                   child:Container(
                     width: 84,
                     height: 34,
@@ -1359,10 +1441,20 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
                   ),
                   SizedBox(width: 12,),
-                  GestureDetector(onTap: (){
+                  GestureDetector(onTap: () {
+
+                    print('标题21111${widget.nextTitle}');
+                      widget.nextTitle = 'Save';
+                      setState(() {});
                     if (widget.nextClick != null){
                       widget.nextClick!();
                     }
+                    print('标题2${widget.nextTitle}');
+                    if (widget.nextTitle == 'Save') {
+                        shotScreenAndSaveData();
+                        // 发送获取建图面积指令
+                        RobotManager().readRobotMapArea();
+                      }
                     },
                     child:Container(
                       width: 84,
@@ -1372,17 +1464,15 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                         color: Constants.selectedModelBgColor,
                       ),
                       child: Center(
-                        child: Constants.mediumWhiteTextWidget('Next', 16, Colors.white),
+                        child: Constants.mediumWhiteTextWidget('${widget.nextTitle}', 16, Colors.white),
                       ),
                     ),
                   ),
                  // SizedBox(width: 24,),
                 ],
               ),
-
             ),
           ),
-
           ),
 
           /// 控制机器人的原始滑杆

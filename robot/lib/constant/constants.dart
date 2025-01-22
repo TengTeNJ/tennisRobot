@@ -167,8 +167,7 @@ class Constants {
   static Color courtGridBgColor = Color.fromRGBO(6, 6, 6, 1);
   static Color addCourtBgColor = Color.fromRGBO(15, 16, 22, 1);
   static Color addCourtTextColor = Color.fromRGBO(248, 98, 21, 1);
-
-
+  static Color addCourtInfoBgColor = Color.fromRGBO(39, 41, 48, 1);
 
 
 
@@ -179,6 +178,7 @@ class Constants {
   static int kTcpPort = 12345;
 }
 const kDataBaseTableName = 'ball_table'; // 数据库的表名
+const kDataBaseCourtTableName = 'court_table'; //建图相关的表
 
 const kDataFrameHeader = 0xA5; // 数据帧头
 const kDataFrameFoot = 0xAA; // 数据帧尾
