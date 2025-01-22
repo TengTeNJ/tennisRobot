@@ -129,7 +129,7 @@ class _ConnectRobotControllerState extends State<ConnectRobotController> {
                           print('deviceInfo123 ${RobotManager().dataModel.speed}');
                         }
                       };
-                      NavigatorUtil.push(Routes.home);
+                      NavigatorUtil.push(Routes.courtList);
                     },
                     child: Container(
                       child: Center(
