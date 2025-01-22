@@ -1,4 +1,5 @@
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+//import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:typed_data';
 
 class Courtmodel {
   String courtIndex = '0'; //索引

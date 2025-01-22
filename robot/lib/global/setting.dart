@@ -342,7 +342,7 @@ class Setting {
     prefs.setString('SpeedCtrlTopic', "/cmd_vel");
     prefs.setString('BatteryTopic', "/battery_status");
     // TODO: 修改配置默认速速
-    prefs.setString('MaxVx', "0.5");
+    prefs.setString('MaxVx', "0.8");
     prefs.setString('MaxVy', "0.5");
     prefs.setString('MaxVw', "0.5");
     prefs.setString('mapFrameName', "map");
@@ -551,6 +551,24 @@ class Setting {
 
   void setRobotPort(String port) {
     prefs.setString('robotPort', port);
+  }
+
+  /// 建图的名字
+  void setRobotMapName(String mapName) {
+    prefs.setString('robotMapName', mapName);
+  }
+
+  String get RobotMapName {
+    return prefs.getString("robotMapName") ?? "";
+  }
+
+  /// 建图的地址
+  void setRobotMapLocation(String mapLocation) {
+    prefs.setString('robotMapLocation', mapLocation);
+  }
+
+  String get RobotMapLocation {
+    return prefs.getString("robotMapLocation") ?? "";
   }
 
   // 地图相关方法

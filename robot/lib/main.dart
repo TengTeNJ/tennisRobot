@@ -1,127 +1,181 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:tennis_robot/connect/connect_robot_controller.dart';
-import 'package:tennis_robot/root_page.dart';
+/// 原始机器人main函数
+// import 'package:flutter/material.dart';
+// import 'package:flutter_easyloading/flutter_easyloading.dart';
+// import 'package:tennis_robot/connect/connect_robot_controller.dart';
+// import 'package:tennis_robot/route/routes.dart';
+// import 'package:tennis_robot/utils/navigator_util.dart';
+//
+// void main() {
+//   runApp(const MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     NavigatorUtil.init(context);
+//
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       onGenerateRoute: Routes.onGenerateRoute,
+//       home: ConnectRobotController(),
+//       //home: RobotConnectionPage(),
+//       builder: EasyLoading.init(),
+//     );
+//   }
+// }
+/// 建图定位 图传通信机器人main函数
+import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:gamepads/gamepads.dart';
+import 'package:tennis_robot/court/court_list_controller.dart';
+import 'package:tennis_robot/global/setting.dart';
+import 'package:tennis_robot/page/court_map_page.dart';
+import 'package:tennis_robot/provider/global_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tennis_robot/route/routes.dart';
-import 'package:tennis_robot/selectmode/select_mode_controller.dart';
-import 'package:tennis_robot/trainmode/robot_move_view.dart';
+import 'package:tennis_robot/trainmode/train_mode_controller.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
-import 'package:shopify_flutter/shopify_flutter.dart';
+import 'package:toast/toast.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tennis_robot/page/map_page.dart';
+import 'package:tennis_robot/page/robot_connect_page.dart';
+import 'package:tennis_robot/provider/ros_channel.dart';
+import 'package:tennis_robot/page/setting_page.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
+import 'provider/them_provider.dart';
 
-void main() {
-  ShopifyConfig.setConfig(
-    storefrontAccessToken: 'e49948d9b677f9bf54e9e73bc7922aac',
-    storeUrl:'http://www.baidu.com',
-    adminAccessToken: 'a1d13b7d828641d00a18fbf94c0c95b0',
-    storefrontApiVersion:'2023-07',
-    cachePolicy: CachePolicy.noCache,
-    language: 'en',
-  );
-
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _setInitialOrientation();
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<RosChannel>(create: (_) => RosChannel()),
+    ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+    ChangeNotifierProvider<GlobalState>(create: (_) => GlobalState())
+  ], child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<void> _setInitialOrientation() async {
+  ///  landscape 横屏     portrait 竖屏
+  final prefs = await SharedPreferences.getInstance();
+  final orientationValue = prefs.getString('screenOrientation') ?? 'portrait';
+  if (orientationValue == 'portrait') {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  } else {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+}
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    // 关闭系统状态栏的显示
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    WakelockPlus.toggle(enable: true);
+  }
 
   @override
   Widget build(BuildContext context) {
     NavigatorUtil.init(context);
 
     return MaterialApp(
-      title: 'Flutter Demo',
       onGenerateRoute: Routes.onGenerateRoute,
-      home: ConnectRobotController(),
-      // home: RobotMoveView(),
-      builder: EasyLoading.init(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      title: 'Ros Flutter GUI App',
+      initialRoute: "/connect",
+      routes: {
+        "/connect": ((context) => RobotConnectionPage()),
+        "/map": ((context) => MapPage(nextTitle: '',)),
+        "/setting": ((context) => SettingsPage()),
+        "/court": ((context) => CourtMapPage()),
+        "/courtList":((context) => CourtListController()),
+        "/train":((context) => TrainModeController()),
+      },
+      themeMode: Provider.of<ThemeProvider>(context, listen: true).themeMode,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: Colors.blue,
+          secondary: Colors.blue[50],
+          background: Color.fromRGBO(240, 240, 240, 1),
+          surface: Color.fromARGB(153, 224, 224, 224),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.black, // 设置全局图标颜色为绿色
+        ),
+        cardColor: Color.fromRGBO(230, 230, 230, 1),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(elevation: 0),
+        chipTheme: ThemeData.light().chipTheme.copyWith(
+          backgroundColor: Colors.white,
+          elevation: 10.0,
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: Colors.grey[300]!, // 设置边框颜色
+              width: 1.0, // 设置边框宽度
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme:
+        ColorScheme.fromSwatch(brightness: Brightness.dark).copyWith(
+          primary: Colors.blue,
+          secondary: Colors.blueGrey,
+          surface: Color.fromRGBO(60, 60, 60, 1),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          ),
+        ),
+        cardColor: Color.fromRGBO(230, 230, 230, 1),
+        scaffoldBackgroundColor: Color.fromRGBO(40, 40, 40, 1),
+        appBarTheme: AppBarTheme(elevation: 0),
+        iconTheme: IconThemeData(
+          color: Colors.white, // 设置全局图标颜色为绿色
+        ),
+        chipTheme: ThemeData.dark().chipTheme.copyWith(
+          backgroundColor: Color.fromRGBO(60, 60, 60, 1),
+          elevation: 10.0,
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: Colors.white, // 设置边框颜色
+              width: 1.0, // 设置边框宽度
+            ),
+          ),
+        ),
+      ),
+      home: RobotConnectionPage(),
     );
   }
 }
+
+

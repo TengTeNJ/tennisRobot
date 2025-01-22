@@ -488,7 +488,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadOrientation() async {
     final prefs = await SharedPreferences.getInstance();
     final orientationValue =
-        prefs.getString('screenOrientation') ?? 'landscape';
+        prefs.getString('screenOrientation') ?? 'portrait';
     _selectedOrientation = orientationValue == 'portrait'
         ? Orientation.portrait
         : Orientation.landscape;

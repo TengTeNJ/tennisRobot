@@ -8,6 +8,7 @@ import 'package:toast/toast.dart';
 
 import '../route/routes.dart';
 import '../utils/navigator_util.dart';
+import '../utils/robot_manager.dart';
 
 class RobotConnectionPage extends StatefulWidget {
   @override
@@ -402,6 +403,10 @@ class _RobotConnectionPageState extends State<RobotConnectionPage> {
       final provider = Provider.of<RosChannel>(context, listen: false);
       globalSetting.setRobotIp(ip);
       globalSetting.setRobotPort(_portController.text);
+
+      // tcp 连接机器人
+      RobotManager().startTCPConnect();
+
 
       print('设置的速度为${0.5}');
       final success = await provider.connect("ws://$ip:$port");

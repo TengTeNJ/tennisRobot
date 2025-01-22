@@ -2,9 +2,12 @@ import 'dart:ui';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_robot/basic/occupancy_map.dart';
 import 'package:tennis_robot/provider/ros_channel.dart';
+import 'dart:ui' as ui;
+
 
 class DisplayMap extends StatefulWidget {
   const DisplayMap();
@@ -16,6 +19,8 @@ class DisplayMap extends StatefulWidget {
 class _DisplayMapState extends State<DisplayMap> {
   List<MapPoint> occPointList = [];
   List<Offset> freePointList = [];
+
+  GlobalKey _globalKey = GlobalKey();
 
   @override
   void initState() {
@@ -48,6 +53,7 @@ class _DisplayMapState extends State<DisplayMap> {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
     return RepaintBoundary(
+        key: _globalKey,
         child: ValueListenableBuilder<OccupancyMap>(
             valueListenable: Provider.of<RosChannel>(context, listen: true).map,
             builder: (context, occMap, child) {

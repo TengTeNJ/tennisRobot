@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -10,9 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_joystick/flutter_joystick.dart';
-import 'package:flutter_mjpeg/flutter_mjpeg.dart';
-import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_robot/basic/RobotPose.dart';
@@ -43,6 +39,9 @@ import '../utils/data_base.dart';
 import 'dart:ui' as ui;
 
 import '../utils/dialog.dart';
+
+import 'dart:typed_data';
+
 
 class MapPage extends StatefulWidget {
   Function? nextClick;
@@ -444,7 +443,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
   }
 
-  Future<Uint8List?> takeScreenshot(GlobalKey globayKey) async {
+  Future<Uint8List> takeScreenshot(GlobalKey globayKey) async {
     try {
       RenderRepaintBoundary boundary = globayKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3.0); // 调整分辨率以适应高像素密度设备
@@ -455,20 +454,17 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           var result =( await ImageGallerySaver.saveImage(pngBytes)).toString();
           print('666000${result}');
 
-        } else {
-
         }
         return pngBytes;
       }
     } catch (e) {
       print(e);
     }
-    return null;
+    return Future.value(null);
   }
 
   void shotScreenAndSaveData() async{
-   // String shotImagePath = saveScreenshot(_globalKey);
-   var imageData = takeScreenshot(_globalKey);
+   var imageData = await takeScreenshot(_globalKey);
    if (globalSetting.RobotMapName == ''  || globalSetting.RobotMapLocation == '') {
      //TTToast.showToast('请输入球场信息');
      EasyLoading.showError('请输入球场信息');
@@ -478,7 +474,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
    }
    print('有球场信息');
 
-   // print('保存的图片地址为${shotImagePath}');
     /// 本地保存建图信息
     final courtList = await DataBaseHelper().getCourtData(
         kDataBaseCourtTableName);
@@ -486,14 +481,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       RobotManager().saveRobotMap(0);
       var todayTime = StringUtil.currentTimeString();
       var model = Courtmodel(
-          '0', '', globalSetting.RobotMapName, globalSetting.RobotMapLocation, todayTime);
+          '0',imageData as Uint8List,'', globalSetting.RobotMapName, globalSetting.RobotMapLocation, todayTime);
       DataBaseHelper().insertCourtData(kDataBaseCourtTableName, model);
     } else {
       var model = courtList.last;
       var todayTime = StringUtil.currentTimeString();
       var currentIndex = (int.parse(model.courtIndex) + 1).toString(); //索引递增
       var currentModel = Courtmodel(
-          currentIndex, '', globalSetting.RobotMapName,  globalSetting.RobotMapLocation, todayTime);
+          currentIndex, imageData as Uint8List,'', globalSetting.RobotMapName,  globalSetting.RobotMapLocation, todayTime);
       DataBaseHelper().insertCourtData(kDataBaseCourtTableName, currentModel);
       RobotManager().saveRobotMap(int.parse(model.courtIndex) + 1);
     }
@@ -1444,7 +1439,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   GestureDetector(onTap: () {
 
                     print('标题21111${widget.nextTitle}');
-                      widget.nextTitle = 'Save';
+                    //  widget.nextTitle = 'Save';
                       setState(() {});
                     if (widget.nextClick != null){
                       widget.nextClick!();
@@ -1452,7 +1447,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     print('标题2${widget.nextTitle}');
                     if (widget.nextTitle == 'Save') {
                         shotScreenAndSaveData();
-                        // 发送获取建图面积指令
+                       // 发送获取建图面积指令
                         RobotManager().readRobotMapArea();
                       }
                     },

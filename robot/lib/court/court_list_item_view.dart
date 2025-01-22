@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tennis_robot/models/CourtModel.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
 
 import '../constant/constants.dart';
 
@@ -17,7 +18,10 @@ class _CourtListItemViewState extends State<CourtListItemView> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-      },
+        /// 读取建的图
+        RobotManager().readRobotMap(0);
+        Navigator.pushNamed(context, "/train");
+        },
       child: Container(
         decoration: BoxDecoration(
           color: Constants.courtListBgColor,
@@ -35,7 +39,12 @@ class _CourtListItemViewState extends State<CourtListItemView> {
                       width: Constants.screenWidth(context)/2,
                       height: 123,
                       color: Constants.courtGridBgColor,
-
+                      // child:Image(
+                      // image: AssetImage('//media/external/images/media/1930496'),
+                      child: Image.memory(widget.model.screenshot),
+                    //  fit: BoxFit.cover,
+                   //   width: Constants.screenWidth(context)/2,
+                     // height:123,),
                   ),
                   SizedBox(width: 12,),
                   Container(
@@ -44,7 +53,7 @@ class _CourtListItemViewState extends State<CourtListItemView> {
                      // mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Constants.mediumWhiteTextWidget('Potent Test', 16, Colors.white),
+                        Constants.mediumWhiteTextWidget('${widget.model.courtName}', 16, Colors.white),
                         SizedBox(height: 20,),
                         Container(
                           // padding: EdgeInsets.only(left: 12),
@@ -55,7 +64,7 @@ class _CourtListItemViewState extends State<CourtListItemView> {
                                 width: 7,
                                 height:10,),
                                SizedBox(width: 3,),
-                              Constants.regularWhiteTextWidget('AXIN Tennis', 12, Constants.grayTextColor),
+                              Constants.regularWhiteTextWidget('${widget.model.courtAddress}', 12, Constants.grayTextColor),
                             ],
                           ),
                         ),
@@ -69,7 +78,7 @@ class _CourtListItemViewState extends State<CourtListItemView> {
                                 height:7,),
                               SizedBox(width: 3,),
 
-                              Constants.regularWhiteTextWidget('Mar 31,2024 10:30', 12, Constants.grayTextColor),
+                              Constants.regularWhiteTextWidget('${widget.model.courtDate}', 12, Constants.grayTextColor),
                             ],
                           ),
                         )

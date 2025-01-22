@@ -68,6 +68,29 @@ class TTDialog {
     );
 
   }
+
+  /// 机器人重新绘制建图弹窗
+  static robotRedrawMapAlertDialog(BuildContext context,Function exchange) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                // color: hexStringToColor('#3E3E55'),
+                color: Constants.dialogBgColor,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child:RobotMapRedrawDialog(exchange: exchange),
+            ),
+          );
+        }
+    );
+
+  }
+
 }
 
 /*机器人模式提示弹窗*/
@@ -248,6 +271,57 @@ class RobotEndTaskDialog extends StatelessWidget {
           Padding(padding: EdgeInsets.only(left: 24,right: 24),child: BaseButton(
               borderRadius: BorderRadius.circular(5),
               title: 'Finish',
+              height: 40,
+              onTap: () {
+                this.exchange();
+              }),),
+          SizedBox(
+            height: 32,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//*机器人建图重新绘制提示弹窗*/
+class RobotMapRedrawDialog extends StatelessWidget {
+  Function exchange;
+
+  RobotMapRedrawDialog({required this.exchange});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [CancelButton()],
+          ),
+
+          Image(image: AssetImage('images/base/redraw_map.png'),
+            width: 30,
+            height: 32,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Constants.mediumWhiteTextWidget('Redraw', 19, Colors.white),
+          SizedBox(
+            height: 12,
+          ),
+
+          Constants.regularWhiteTextWidget('Redraw the map?', 16,Constants.connectTextColor),
+
+          SizedBox(
+            height: 79,
+          ),
+          Padding(padding: EdgeInsets.only(left: 24,right: 24),child: BaseButton(
+              borderRadius: BorderRadius.circular(5),
+              title: 'Yes',
               height: 40,
               onTap: () {
                 this.exchange();

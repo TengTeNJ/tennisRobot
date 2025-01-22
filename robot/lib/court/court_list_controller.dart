@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tennis_robot/court/court_list_view.dart';
 import 'package:tennis_robot/models/CourtModel.dart';
 import 'package:tennis_robot/route/routes.dart';
+import 'package:tennis_robot/utils/robot_manager.dart';
 import '../constant/constants.dart';
+import '../utils/data_base.dart';
 import '../utils/navigator_util.dart';
 
 // 建圖列表VC
@@ -14,6 +16,13 @@ class CourtListController extends StatefulWidget {
 }
 
 class _CourtListControllerState extends State<CourtListController> {
+   var list = List<Courtmodel>;
+
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,22 +69,13 @@ class _CourtListControllerState extends State<CourtListController> {
 
               Expanded(child: Padding(
                 padding: EdgeInsets.only(left: 20, right: 20,top: 32),
-                child: CourtListView(datas: [Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
-                  Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
-                  Courtmodel('', 'courtName', 'courtAddress', 'courtDate')],
-                    ),
+                child: CourtListView(datas: []),
               )
               ),
 
-              // Container(
-              //   padding: EdgeInsets.only(left: 20, right: 20,top: 8),
-              //   child: CourtListView(datas: [Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
-              //     // Courtmodel('', 'courtName', 'courtAddress', 'courtDate'),
-              //     Courtmodel('', 'courtName', 'courtAddress', 'courtDate')],
-              //   ),
-              // ),
-
               GestureDetector(onTap: (){
+                /// 开启一个新的建图
+                RobotManager().openNewRobotMap(1);
                 Navigator.pushNamed(context, "/court");
                 },
               child: Container(

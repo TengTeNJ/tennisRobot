@@ -27,7 +27,7 @@ class CancelButton extends StatelessWidget {
               child: Center(
                 child: Image(
                   fit: BoxFit.fitWidth,
-                  image: AssetImage('images/base/close_icon.png'),
+                  image: AssetImage('images/base/close_new_icon.png'),
                   width: 25,
                   height: 25,
                 ),

@@ -1,5 +1,10 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import '../constant/constants.dart';
 import '../route/routes.dart';
@@ -16,11 +21,19 @@ class CourtMapController extends StatefulWidget {
 
 class _CourtMapControllerState extends State<CourtMapController> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // Future.delayed(Duration(milliseconds: 1000), () {
+    //   saveScreenshot();
+    // });
+  }
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Constants.darkControllerColor,
-      body: SingleChildScrollView(
-      //  color: Constants.darkControllerColor,
+    return RepaintBoundary(
+      // backgroundColor: Constants.darkControllerColor,
+      child: SingleChildScrollView(
+        // : Constants.darkControllerColor,
         child: Column(
             children: [
               Container(
@@ -84,9 +97,7 @@ class _CourtMapControllerState extends State<CourtMapController> {
                             ),
                           ),
 
-
                           SizedBox(width: 12),
-
                           Container(
                             width: 31,
                             height: 31,
@@ -102,8 +113,6 @@ class _CourtMapControllerState extends State<CourtMapController> {
                               color: Constants.courtListBgColor,
                             ),
                           ),
-
-
                         ],
                       ),
                     ),
@@ -150,7 +159,6 @@ class _CourtMapControllerState extends State<CourtMapController> {
                       ),
                       SizedBox(width: 24,),
                     ],
-
                   ),
 
                 ),
