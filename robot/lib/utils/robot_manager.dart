@@ -5,6 +5,7 @@ import 'package:tennis_robot/utils/event_bus.dart';
 import 'package:tennis_robot/utils/robot_send_data.dart';
 import 'package:tennis_robot/utils/string_util.dart';
 import 'package:tennis_robot/utils/tcp_util.dart';
+import 'package:tennis_robot/utils/toast.dart';
 import '../constant/constants.dart';
 
 enum TCPDataType {
@@ -111,6 +112,35 @@ class RobotManager {
     List<int> data = moveRobotToDesignPosition(x, y);
     _utpUtil?.sendListData(data);
   }
+  /// 保存机器人建的图
+  saveRobotMap(int index) {
+    List<int> data = saveRobotMapData(index);
+    _utpUtil?.sendListData(data);
+  }
+
+  /// 重新绘制机器人建的图
+  redrawRobotMap() {
+    List<int> data = resetRobotMapData(0);
+    _utpUtil?.sendListData(data);
+  }
+
+  /// 读取机器人建的图
+  readRobotMap(int index) {
+    List<int> data = readRobotMapData(index);
+    _utpUtil?.sendListData(data);
+  }
+
+  /// 机器人开启新的建图
+  openNewRobotMap(int index) {
+    List<int> data = openNewRobotMapData(index);
+    _utpUtil?.sendListData(data);
+  }
+
+  /// 读取机器人建图面积
+  readRobotMapArea() {
+    List<int> data = readRobotMapAreaData();
+    _utpUtil?.sendListData(data);
+  }
 
   /*主动请求某个数据*/
   manualFetch(ManualFetchType type) {
@@ -210,6 +240,18 @@ handleData(List<int> element) {
       print('电量=======${power_data}');
       RobotManager()._triggerCallback(type: TCPDataType.deviceInfo);
       break;
+    case ResponseCMDType.robotSaveMapSuccess:
+
+    case ResponseCMDType.robotMapAreaResponse:
+    int switch_data = element[2]; //  建图的面积
+    int power_data = element[3]; //
+    // 建图的面积
+    print('建图的面积为${power_data}');
+
+    TTToast.showToast('建图的面积为${switch_data}');
+    TTToast.showToast('建图的面积为6${power_data}');
+
+
     case ResponseCMDType.workStatu:
       int statu_data = element[2];
       RobotManager().dataModel.statu = [
