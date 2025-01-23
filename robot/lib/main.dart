@@ -38,6 +38,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tennis_robot/route/routes.dart';
 import 'package:tennis_robot/trainmode/train_mode_controller.dart';
 import 'package:tennis_robot/utils/navigator_util.dart';
+import 'package:tennis_robot/views/google_map_view.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -106,6 +107,7 @@ class _MyAppState extends State<MyApp> {
         "/court": ((context) => CourtMapPage()),
         "/courtList":((context) => CourtListController()),
         "/train":((context) => TrainModeController()),
+        "/googlemap": ((context) => GoogleMapView()),
       },
       themeMode: Provider.of<ThemeProvider>(context, listen: true).themeMode,
       theme: ThemeData(
