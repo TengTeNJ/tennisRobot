@@ -28,6 +28,7 @@ class RobotDataModel {
   int angle = 0; // 机器人角度
   int speed = 0; // 机器人速度
   List<BallModel> inViewBallList = []; // 视野中看到的所有的球
+  int ceateMapArea = 0; // 建图的面积
 }
 //   int warnStatu = 0; // 机器人告警信息 0 无告警,1 卡停告警,2 手环信号丢失告警,3 电池电量低告警  暂无
 //   int errorStatu = 0;  1 收球轮异常故障,2 行走轮异常故障, 3 摄像头异常故障 4 雷达异常故障

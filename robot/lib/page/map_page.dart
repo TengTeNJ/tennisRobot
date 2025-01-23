@@ -26,12 +26,14 @@ import 'package:tennis_robot/provider/global_state.dart';
 import 'package:tennis_robot/provider/ros_channel.dart';
 import 'package:tennis_robot/display/display_map.dart';
 import 'package:tennis_robot/display/display_grid.dart';
+import 'package:tennis_robot/utils/navigator_util.dart';
 import 'package:tennis_robot/utils/robot_manager.dart';
 import 'package:tennis_robot/utils/string_util.dart';
 import 'package:tennis_robot/utils/toast.dart';
 import 'package:toast/toast.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:tennis_robot/display/display_waypoint.dart';
+import 'package:win32/win32.dart';
 
 import '../Constant/constants.dart';
 import '../models/CourtModel.dart';
@@ -47,7 +49,6 @@ class MapPage extends StatefulWidget {
   Function? nextClick;
   String nextTitle;
 
-  //const MapPage({super.key});
   MapPage({this.nextClick,required this.nextTitle});
 
   @override
@@ -56,6 +57,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   GlobalKey _globalKey = GlobalKey();
+  int currentCreateMapArea = 0;// 当前建图的面积
 
   ValueNotifier<bool> manualCtrlMode_ = ValueNotifier(false);
   ValueNotifier<List<RobotPose>> navPointList_ =
@@ -142,6 +144,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       // print(currentNavGoal_);
       // print(hasReachedGoal_.value);
     });
+
+    RobotManager().dataChange = (TCPDataType type) {
+
+      if (type == TCPDataType.deviceInfo) {
+        print('robot battery ${RobotManager().dataModel.powerValue}');
+      } else if (type == TCPDataType.createMapArea) {
+        currentCreateMapArea = RobotManager().dataModel.ceateMapArea;
+      }
+    };
+
   }
 
 // 计算两点之间的距离的方法
@@ -464,15 +476,24 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   void shotScreenAndSaveData() async{
-   var imageData = await takeScreenshot(_globalKey);
-   if (globalSetting.RobotMapName == ''  || globalSetting.RobotMapLocation == '') {
-     //TTToast.showToast('请输入球场信息');
-     EasyLoading.showError('请输入球场信息');
+    if (globalSetting.RobotMapName == ''  || globalSetting.RobotMapLocation == '') {
+      //TTToast.showToast('请输入球场信息');
+      EasyLoading.showError('请输入球场信息');
+      print('没有球场信息');
+      return;
+    }
+    if (currentCreateMapArea < 670) { /// 建图面积小于标准网球场的最小面积
+      EasyLoading.showInfo('${currentCreateMapArea}');
+      TTDialog.robotCreateMapFailedAlertDialog(context, () async {
 
-     print('没有球场信息');
-     return;
-   }
-   print('有球场信息');
+      });
+      /// 球场信息置空
+      globalSetting.setRobotMapName('');
+      globalSetting.setRobotMapLocation('');
+      return;
+    }
+    var imageData = await takeScreenshot(_globalKey);
+    print('有球场信息');
 
     /// 本地保存建图信息
     final courtList = await DataBaseHelper().getCourtData(
@@ -1414,7 +1435,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     // animationController.forward(); // 启动动画
 
                     TTDialog.robotRedrawMapAlertDialog(context, () async {
-                     // NavigatorUtil.pop();
                       /// 重新绘制建图
                       RobotManager().redrawRobotMap();
                     });

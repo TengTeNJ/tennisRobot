@@ -178,7 +178,6 @@ class _CourtMapPageState extends State<CourtMapPage> {
                         Navigator.pop(context); // 返回到上一个页面
                       },
                         child: Container(
-                          //  padding: EdgeInsets.all(12.0),
                           padding: EdgeInsets.only(left: 0,top: 12,bottom: 12,right: 24),
                           color:  Constants.darkControllerColor,
                           width: 48,

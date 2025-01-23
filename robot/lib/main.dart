@@ -28,6 +28,7 @@
 /// 建图定位 图传通信机器人main函数
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gamepads/gamepads.dart';
 import 'package:tennis_robot/court/court_list_controller.dart';
 import 'package:tennis_robot/global/setting.dart';
@@ -174,6 +175,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       home: RobotConnectionPage(),
+      builder: EasyLoading.init(),
     );
   }
 }

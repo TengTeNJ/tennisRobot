@@ -19,7 +19,8 @@ enum TCPDataType {
   area,
   speed,
   coordinate,
-  ballsInView
+  ballsInView,
+  createMapArea
 }
 
 class RobotManager {
@@ -244,12 +245,11 @@ handleData(List<int> element) {
 
     case ResponseCMDType.robotMapAreaResponse:
     int switch_data = element[2]; //  建图的面积
-    int power_data = element[3]; //
+    int area_data = element[3]; //
     // 建图的面积
-    print('建图的面积为${power_data}');
-
-    TTToast.showToast('建图的面积为${switch_data}');
-    TTToast.showToast('建图的面积为6${power_data}');
+    print('建图的面积为${area_data}');
+     RobotManager().dataModel.ceateMapArea = area_data;
+     RobotManager()._triggerCallback(type: TCPDataType.createMapArea);
 
 
     case ResponseCMDType.workStatu:

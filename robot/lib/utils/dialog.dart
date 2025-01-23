@@ -80,10 +80,15 @@ class TTDialog {
               padding: EdgeInsets.all(12.0),
               decoration: BoxDecoration(
                 // color: hexStringToColor('#3E3E55'),
-                color: Constants.dialogBgColor,
+                color: Constants.courtListBgColor,
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              child:RobotMapRedrawDialog(exchange: exchange),
+              child:RobotMapRedrawDialog(exchange: exchange,
+                imageName: 'images/base/redraw_map.png',
+                title: 'Redraw',
+               subTitle: 'Redraw the map?',
+               bottomBtnTitle: 'Yes',
+              ),
             ),
           );
         }
@@ -91,6 +96,59 @@ class TTDialog {
 
   }
 
+  /// 机器人建图成功弹窗
+  static robotCreateMapSuccessAlertDialog(BuildContext context,Function exchange) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                // color: hexStringToColor('#3E3E55'),
+                color: Constants.courtListBgColor,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child:RobotMapRedrawDialog(exchange: exchange,
+                imageName: 'images/court/create_court_success.png',
+                title: 'Success',
+                subTitle: 'Saved successfully.',
+                bottomBtnTitle: 'Confirm',
+              ),
+            ),
+          );
+        }
+    );
+
+  }
+
+  /// 机器人建图失败弹窗
+  static robotCreateMapFailedAlertDialog(BuildContext context,Function exchange) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                // color: hexStringToColor('#3E3E55'),
+                color: Constants.courtListBgColor,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child:RobotMapRedrawDialog(exchange: exchange,
+                imageName: 'images/court/create_court_failed.png',
+                title: 'Save Failed',
+                subTitle: 'The map is incomplete Please redraw it.',
+                bottomBtnTitle: 'Redraw',
+              ),
+            ),
+          );
+        }
+    );
+
+  }
 }
 
 /*机器人模式提示弹窗*/
@@ -287,8 +345,17 @@ class RobotEndTaskDialog extends StatelessWidget {
 //*机器人建图重新绘制提示弹窗*/
 class RobotMapRedrawDialog extends StatelessWidget {
   Function exchange;
+  String imageName;
+  String title;
+  String subTitle;
+  String bottomBtnTitle;
 
-  RobotMapRedrawDialog({required this.exchange});
+
+  RobotMapRedrawDialog({required this.exchange,
+    required this.imageName,
+    required this.title,
+    required this.subTitle,
+    required this.bottomBtnTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -299,29 +366,32 @@ class RobotMapRedrawDialog extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [CancelButton()],
+            children: title == 'Yes' ?  [CancelButton()] : [Container()]
           ),
-
-          Image(image: AssetImage('images/base/redraw_map.png'),
+          SizedBox(height: 40,),
+          Image(image: AssetImage('${imageName}'),
             width: 30,
             height: 32,
           ),
           SizedBox(
             height: 10,
           ),
-          Constants.mediumWhiteTextWidget('Redraw', 19, Colors.white),
+          Constants.mediumWhiteTextWidget('${title}', 19, Colors.white),
           SizedBox(
             height: 12,
           ),
 
-          Constants.regularWhiteTextWidget('Redraw the map?', 16,Constants.connectTextColor),
+          Container(
+            margin: EdgeInsets.only(left: 50,right: 50),
+            child: Constants.regularWhiteTextWidget('${subTitle}', 16,Constants.connectTextColor,maxLines: 2),
+          ),
 
           SizedBox(
             height: 79,
           ),
           Padding(padding: EdgeInsets.only(left: 24,right: 24),child: BaseButton(
-              borderRadius: BorderRadius.circular(5),
-              title: 'Yes',
+              borderRadius: BorderRadius.circular(20),
+              title: '${bottomBtnTitle}',
               height: 40,
               onTap: () {
                 this.exchange();

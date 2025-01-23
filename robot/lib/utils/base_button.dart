@@ -23,6 +23,7 @@ class BaseButton extends StatelessWidget {
 
     },child: Container(
       height: height,
+      width: 151,
       decoration: BoxDecoration(
         // gradient:  linearGradient,
         borderRadius:  borderRadius ?? BorderRadius.circular(10),
