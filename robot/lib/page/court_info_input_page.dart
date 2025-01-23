@@ -51,9 +51,9 @@ class _CourtInfoInputPageState extends State<CourtInfoInputPage> {
              color: Color.fromRGBO(39,41, 48, 1.0),
              borderRadius: BorderRadius.circular(20)//
            ),
-            // child: GestureDetector(onTap: (){
-            //   FocusScope.of(context).unfocus();
-            //   },
+            child: GestureDetector(onTap: (){
+              FocusScope.of(context).unfocus();
+              },
                  child: Column(
                   children: [
                     // Row(
@@ -128,45 +128,92 @@ class _CourtInfoInputPageState extends State<CourtInfoInputPage> {
                       child: Constants.regularWhiteTextWidget('Location', 18, Colors.white,textAlign: TextAlign.left),
                     ),
 
+                    // Container(
+                    //   margin: EdgeInsets.only(left: 30, right: 70, top: 4),
+                    //   height:44 ,
+                    //   child: TextField(
+                    //     onChanged:(value) {
+                    //       globalSetting.setRobotMapLocation(value);
+                    //     },
+                    //     controller: _emailController,
+                    //     cursorColor: Color.fromRGBO(248, 98, 21, 1),
+                    //     style: TextStyle(color: Constants.baseStyleColor), // 设置字体颜色
+                    //     decoration: InputDecoration(
+                    //       hintText: 'Enter location', // 占位符文本
+                    //       focusColor: Colors.red,
+                    //       enabledBorder: UnderlineInputBorder(
+                    //         borderSide: BorderSide(color: Colors.white), // 设置焦点之外的边框颜色
+                    //       ),
+                    //       focusedBorder: UnderlineInputBorder(
+                    //         borderSide: BorderSide(color: Color.fromRGBO(248, 98, 21, 1)), // 设置焦点时的边框颜色
+                    //       ),
+                    //       hintStyle: TextStyle(
+                    //           color: Color.fromRGBO(156, 156, 156, 1.0),
+                    //           fontFamily: 'SanFranciscoDisplay',
+                    //           fontSize: 20,
+                    //           fontWeight: FontWeight.w400),
+                    //     ),
+                    //   ),
+                    // ),
+
+
                     Container(
-                      margin: EdgeInsets.only(left: 30, right: 70, top: 4),
-                      height:44 ,
-                      child: TextField(
-                        onChanged:(value) {
-                          globalSetting.setRobotMapLocation(value);
-                          if (_emailController.text != '' && _nickController.text != ''){
-                            setState(() {
-                              isConnected = true;
-                            });
-                          } else {
-                            setState(() {
-                              isConnected = false;
-                            });
-                          }
-                        },
-                        controller: _emailController,
-                        cursorColor: Color.fromRGBO(248, 98, 21, 1),
-                        style: TextStyle(color: Constants.baseStyleColor), // 设置字体颜色
-                        decoration: InputDecoration(
-                          hintText: 'Enter location', // 占位符文本
-                          focusColor: Colors.red,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white), // 设置焦点之外的边框颜色
+                      margin: EdgeInsets.only(left: 30, top: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: Constants.screenWidth(context) - 100 - 40,
+                            height:44 ,
+                            child: TextField(
+                              onChanged:(value) {
+                                globalSetting.setRobotMapLocation(value);
+                              },
+                              controller: _emailController,
+                              cursorColor: Color.fromRGBO(248, 98, 21, 1),
+                              style: TextStyle(color: Constants.baseStyleColor), // 设置字体颜色
+                              decoration: InputDecoration(
+                                hintText: 'Enter location', // 占位符文本
+                                focusColor: Colors.red,
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white), // 设置焦点之外的边框颜色
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Color.fromRGBO(248, 98, 21, 1)), // 设置焦点时的边框颜色
+                                ),
+                                hintStyle: TextStyle(
+                                    color: Color.fromRGBO(156, 156, 156, 1.0),
+                                    fontFamily: 'SanFranciscoDisplay',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
                           ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color.fromRGBO(248, 98, 21, 1)), // 设置焦点时的边框颜色
-                          ),
-                          hintStyle: TextStyle(
-                              color: Color.fromRGBO(156, 156, 156, 1.0),
-                              fontFamily: 'SanFranciscoDisplay',
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400),
-                        ),
+
+                         GestureDetector(onTap: (){
+                           Navigator.pushNamed(context, "/googlemap");
+
+                         },
+                         child: Container(
+                           margin: EdgeInsets.only(left: 0),
+                           child: Image(
+                             image: AssetImage('images/base/right_arrow.png'),
+                             width: 7,
+                             height: 13,
+                           ),
+                         )
+                         )
+                        ],
+
                       ),
                     ),
+
+
+
                     SizedBox(height: 30),
                   ],
                 ),
+              ),
              // ),
           //  ),
     );
